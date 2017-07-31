@@ -1,0 +1,184 @@
+1. What are the most import machine learning techniques?
+	1. Classification (Naive Bayes, SVM, Decision Trees, Random Forest, NNs)
+	2. Regression (Linear, Logistic)
+	3. Associative Rule Learning (given a bunch of observations, learn relations between variables such that if A and B happen, C will also happen)
+	4. Clustering (computers learn how to partition observations in various subsets, so that each partition will be made up of similar observations according to some metric)
+	5. Density estimation (computers learn how to find statistical values that describe data - Ex: Expectation Maximization)
+
+2. Why is it important to have a robust set of metrics for machine learning?
+	So that we can analytically and objectively assess how accurate our model is.
+	Examples of metrics:
+		Precision: true positives/(true + false positives)
+		Recall: true positives/(true positives + false negatives)
+		F1: (2*precision*recall)/(precision + recall)
+	Implementing these metrics:
+		import numpy as np
+		from sklearn.metrics import precision_recall_curve
+		y_true = np.array([some array])
+		y_scores = np.array([some other array])
+		precision, recall, thresholds = precision_recall_curve(y_true, y_scores)
+		print(precision, recall)
+
+3. Why are Feature extraction and feature engineering so important in machine learning?
+	The features are the variables extracted from the data that are going to be used to create predictions
+		Ex:	predicting if tommorow is sunny
+			features: humidity, wind speed, historical info
+		features can be categorical or numerical(continuous)
+	ETL is the process of Extraction, Transformation, and Loading of features from real data for creating various learning sets. 
+		Transformation refers to operations such as: 
+			- feature weighting
+				Ex: TFxIDF - feature weighting used in text classification
+			- highly correlated feature discarding
+				Ex: ChiSquare - filtering of highly correlated features
+			- creation of synthetic features derivative of the one observed in the data
+				Ex: Kernel Trick
+			- reduction of high dimensional features into lower ones
+				Ex: Hashing, PCA
+			- Binning - transformation of continous features into discrete ones (categorical)
+
+4. Can you provide an example of feature extraction?
+	Machine learning on text files
+	- extract meaningful feature vectors from text. typical example of this is called bag of words
+		Bag of Words:
+			- Each word 'w' in the text collection is associated with a unique integer 'j = wordld(w)' associated to it
+			- For each document 'i', the number of occurences of each word 'w' is computed and this value is stored in a matrix M(i,j). Please, note that M is typically a sparse matrix when a word in not present in a document, its count will be zero
+			- Numpy, sci-kit learn, and Spark all support sparse vectors
+		Sklearn implementation:
+			from sklearn.datasets import fetch_20newsgroups
+			from sklearn.feature_extraction.text import CountVectorizer
+			categories = ['alt.atheism']
+			newsgroups_train = fetch_20newsgroups(subset='train', categories= categories)
+			count_vect=CountVectorizer()
+			Train_counts = count_vect.fit_transform(newsgroups_train.data)
+			print(count_vect.vocabulary_.get(u'man'))
+			# this prints the first index of the word 'man' in the document sparse matrix
+
+5. What is a training set, validation set, a test set, and supervised/unsupervised learning?
+	In ML, a set of true labels is called the 'gold set'. This set of examples is typically built manually either by human experts or via crowdsourcing with tools like the AMaon Mechanical Turk or via explicit/implicit feedback collected by users online. 
+	For instance: 
+		A gold set can contain news articles that are manually assigned to different categories by experts of the various subjects, or it might contain movies with associated rating provided by Netflix users, or ratings of images collected via crowdsourcing. See: ImageNet
+	Supervised machine learning consists of four phases:
+		1. Training phase: A sample extracted from the gold set is used to learn a famiily of data models. Each model can be generated from this family by choosing an appropriate set of hyper-paramters, i.e factors which can be used for algorithm fine-tuning
+		2. Validation phase:
+			The best learned model is selected from the family by picking hyper-parameters which minimize a computed error function on a gold set sample called 'validation set'; this phase is used for identifying the best configuration for a given algorithm
+		3. Test phase: The for the best learned model is evaluated on a gold set sample called 'test set'. This phase is useful for comparing models built by adopting different algorithms
+		4. Application phase: The learned model is applied to the real-world data. 
+		Basically, if a 70-30 split, 70 is training, 20 is validation, 10 is testing 
+	In unsupervised machine learning, there is only test and application phases because there is no model to be learned a-priori. In fact unsupervised algorithms adapt dynamically to the observed data. 
+
+	To reiterate, the validation set is used for tuning the hyperparameters, and the testing set is for final testing on unseen data
+
+6. What is a Bias-Variance tradeoff?
+	Bias and Variance are two independent sources of errors for machine learning which prevent algorithms the models learned beyong the training set.
+	
+	Bias: the error representing missing relations between features and outputs. In ML this phenomenon is called underfitting. High Bias = very bad at fitting to the model. Low bias = captures a lot of relationships between variables in the data
+
+	Variance: the error representing sensitiveness to small training data fluctuations. In ML this phenomenon is called overfitting. High variance = high sensitivity to small changes = bad generalizability to a different dataset
+
+	Algos can have:
+		Low Bias, High Variance (complex algos):
+			good at inter-variable relationships, bad at generalization
+		High Bias, Low Variance (simpler algos):
+			Bad at inter-variable relationships, good at generalization
+		
+		Basically, simple algorithms suck but generalize pretty consistently. Complex ones are really good but suck at generalizing
+
+		You want Low Bias, Low Variance
+
+		TIP to remember this - bias refers to inter-variable bias. Variance refers to across-dataset reproducibilty
+
+	To reduce variance:
+		- get more training data (more exposure to different ranges of data)
+		- decrease the complexity
+
+	To reduce bias:
+		- add more features (not data, since the bias will still be skewed towards one feature if its highly biased)
+		- increase complexity 
+
+7. What is cross-validation and what is overfitting?
+	- As we just mentioned, overfitting refers to a high variance (low bias) model which is bad at generalizing to other data sources, but is (often) complex, and good at recognizing the relationships between variables in the training set. 
+	- The dataset can be split into training, testing/validation sets randomly, but this is not a very good strategy because of the risk that the hyper-parameters will overfit to a particular validation set
+	- enter Cross-Validation
+		The test set is split in K smaller sets called folds, and the model i then learned on K -1 folds, while the remaining data is used for validation. The process is repeated on a loop and the metrics achieved for each iteration are averaged. Am example of cross validation is implemented on a Support Vector Machine (SVM) classification below.
+	- Stratified K-Fold is a varation of k-fold where each set contains approximately the same balanced percent of samples for each target class as the complete set
+	- Code implementation:
+		import numpy as np
+		from sklearn import cross_validation
+		from sklearn import datasets
+		from sklearn import svm
+		diabets = datasets.load_diabetes()
+		X_train, X_test, y_train, y_test = cross_validation.train_test_split(diabets.data, diabets.target, test_size=0.2, random_state=0) # 80/20 split
+		print(X_train.shape, y_train.shape)
+		print(X_test.shape, y_train.shape)
+		clf = svm.SVC(kernel='linear', C=1) # support vector classifier
+		scores = cross_validation.cross_val_score(clf, diabets.data, diabets.target, cv=4) # K=4
+		print(scores)
+		print('Accuracy: {}, {}'.format(scores.mean(), scores.std()))
+
+8. Why are vectors and norms used in ML?
+	Objects such as movies, songs, and documents are typically represented by means of vectors of features. Those features are a synthetic summary of the most salient and discriminative objects and their characteristics
+
+	Given a collection of vectors(the so-called vector space 'V'), a normalization on V is a function of p: V|R satisfying the following properties:
+		For all complex numbers a and all u,v|V,:
+			1. P(av) = |a| P(v)
+			2. P(u + v) <= P(u) + P(v)
+			3. if P(v) = 0, then v is a zero vector
+		The intuitive notion of length for a vector is captured by the norm 2
+			||x||2 = sqrt(x^2+...+x^2 sub n)
+	Code:
+		from numpy import linalg as LA
+		import numpy as np
+		a = np.arange(22)
+		print(LA.norm(a))
+		print(LA.norm(a,1))
+9. What are Numpy, Scipy, and Spark essential datatypes?
+	Numpy 
+		Provides efficient support for memorizing vectors and matrices and for linear algebra operations. 
+		For instance: dot(a, b[, out]) is the dot product of two vectors, while inner(a,b) and outer(a,b[, out]) are respectively the inner and outer products.
+	Scipy 
+		Provides support for the sparse matrices and vectors with multiple memorization strategies in order to save space when dealing with zero entries. In particular the COOrdinate format specifies the nonzero V value for the coordinates (i,j), while the Compressed Sparse Column matrix (CSC) satisfies the relationship M[row_ind[k], col_ind[k]] = data[k]
+	Spark 
+		Has many naive datatypes for local and distributed computations. The primary data abstraction is a distributed collection of items called "Resilient Distributed Dataset (RDD)". RDDs can be created from Hadoop InputFormats or by transforming other RDDs. Numpy arrays, Python list and Scipy CSC sparse matrices are all supported. In addition,  the MLIB, the Spark library for machine learning, supports SparseVectors and LabeledPoint, i.e. local vectors, either dense or sparse, associated with a label/response.
+	Code
+		import numpy as np
+		import scipy.sparse as csr_matrix
+		M = csr_matrix([[4,1,0], [4,0,3], [0,0,1]])
+
+		from pyspark.mllib.linalg import SparseVector
+		from pyspark.mllib.regression import LabeledPoint
+		label = 0.0
+		point = LabeledPoint(label, SparseVector(3, [0,2], [1.0, 3.0]))
+		from pyspark import SparkContext
+		sc = SparkContext()
+		textRDD = sc.textFile('README.md')
+		print(textRDD.count())
+
+10. Can you provide an example for Map and Reduce in Spark? (Let's compute the Mean Square Error)
+	
+	Spark is a powerful paradigm for parallel computations which are mapped into multiple servers with no need of dealing with 
+	low level operations such as scheduling, data partitioning, communication and recovery. Those low level operations were typically exposed to the programmers by previously paradigms. Now Spark solves these problems on our behalf. 
+
+	A simple form of parallel computation supported by Spark is the "Map and Reduce" which has been made popular by Google.
+	'MapReduce' mappers receive (key, value) pairs and output (key, value). 
+	Partitioners split the keys into partitions and then shuffle the data.
+	Sorters perform the grouping
+	Reducers receive (key, iterable[value] and output(key, value))
+
+	In this framework a set of keywords is mapped into a number of workers (e.g. parallel servers available for computation) and the results are then reduced (e.g. collected) by applying a "reduce" operator. The reduce operator could be very simple(for instance a sum) or sophisticated (e.g. a user-defined function)
+
+	EX: Mean Square Error - the average of the squares of the difference between the estimator and what is estimated. 
+	The code implementation adopts python lambda computation. 
+
+	Code
+		MSE = valueAndPreds.map(lambda(v,p): (v-p)**2).reduce(lambda x,y: x+y)/valuesAndPreds.count()
+
+11. Can you provide examples for other computations in Spark?
+	
+	 
+
+
+
+
+
+	
+
