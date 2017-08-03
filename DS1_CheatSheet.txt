@@ -173,7 +173,15 @@
 		MSE = valueAndPreds.map(lambda(v,p): (v-p)**2).reduce(lambda x,y: x+y)/valuesAndPreds.count()
 
 11. Can you provide examples for other computations in Spark?
-	
+	- map(func) - applies a function to an entire dataset (every value therein)
+	- filter(func) - selects only elements of that list which meet the criteria to be filtered
+	- flatmap(func) - similar to map, but each input can be mapped to more than one output
+	- sample(withReplacement, fraction, seed) - samples a fraction of the dataset, with or without replacement, using a given random number generator seed
+	- union(otherDataset) - Returns a new Dataset that contains the union of the elements in the source dataset and argument
+	- intersection(otherDataset) - same shit as above but intersection instead of union
+	- distinct([numtasks]) - Returns a new dataset that contains the distinct elements of the source dataset. 
+	- groupByKey([numtasks]) - When called on a dataset of (K, V) pairs, a dataset of (K, Iterable(V))
+	- reduceByKey([numtasks]) - 
 	 
 
 
