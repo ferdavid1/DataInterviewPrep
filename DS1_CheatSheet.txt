@@ -181,7 +181,39 @@
 	- intersection(otherDataset) - same shit as above but intersection instead of union
 	- distinct([numtasks]) - Returns a new dataset that contains the distinct elements of the source dataset. 
 	- groupByKey([numtasks]) - When called on a dataset of (K, V) pairs, a dataset of (K, Iterable(V))
-	- reduceByKey([numtasks]) - 
+	- reduceByKey(func, [numtasks]) - When called on a dataset of (K,V) pairs, where K implements Ordered, a dataset of (K,V) pairs sorted by kets in ascending or descending order returns, as specified in the boolean ascending argument
+	- join(otherDataset, ([numtasks])) - When called on datasets of type (K,V) and (K,W), a dataset of (K,(V,W)) pairs with all pairs of elements for each key returns. Outer joins are here supported through leftOuterJoin, rightOuterJoin, and fullOuterJoin.
+	- reduce(func) - Aggregates the elemnts of the dataset using a function func (which takes two arguments and returns one). The function should be commutative and associative so that it can be computed correctly in parallel. 
+	- collect() - Returns all elements of the dataset as an array at the driver program. This is usually useful after a filter or other operations that return a sufficiently small subset of data. 
+	- count() - returns the number of elements in the dataset. 
+	- takeSample(withReplacement, num, [seed]) - Returns an array with a random sample of num elements in the dataset, with or without replacement, optionally specifying a seed for the rng
+	- countByKey() - Only avaialable on RDDs of type (K, V). A hashmap of (K, Int) pairs with the count of each key returns. 
+	- foreach(func) - Runs a function func on each element of the dataset, like map, but this is usually used for side effects of the algorithm (idk why)
+
+	- Code:
+		# map reduce
+		textFile.map(lambda line: len(line.split())).reduce(lambda a,b:a if (a>b) else b)
+
+		# word count
+		wordCounts = textFile.flatMap(lambda line: line.split()).map(lambda word: (word, 1)).reduceByKey(lambda a,b: a+b)
+
+		# broadcast - a type of read-only variable that gets cached on the spark machine
+		broadcastVar = sc.broadcast([1,2,3])
+
+		# accumulators - a different type of spark variable that is an efficient implementation for counters.
+		accum = sc.accumulator(0)
+		sc.parallelize([1,2,3,4]).foreach(lambda x: accum.add(x))
+
+12. How does Python interact with Spark? 
+	Spark has its own python API ("PySpark"). Spark was developed using Scala. 
+	The modules are optimized for lambda functions, for quick mapping and filtering
+	Functions used for transformations are sent to the workers for code execution, together with serialized data and instances of classes.
+	Python also supports an interactive Spark shell - ./bin/pyspark for command line control
+
+13. What is Spark support for ML?
+	Spark has a powerful library called MLIB for Machine Learning. Mlib supports computation of Basic Statistics and Feature extraction, selection and transformation. It also supports Classifications and Regression iwth linear models, Naive Bayes, decision trees, and other ensembles. Plus, Mlib implements Collaborative filtering, clustering with k-means, Gaussian, LDA, Associative Rule Mining, and Dimensionality Reduction. Many optimization problems are solved by using the Distributed Stochastic Gradient Descent. 
+
+
 	 
 
 
