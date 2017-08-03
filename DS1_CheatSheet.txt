@@ -213,6 +213,15 @@
 13. What is Spark support for ML?
 	Spark has a powerful library called MLIB for Machine Learning. Mlib supports computation of Basic Statistics and Feature extraction, selection and transformation. It also supports Classifications and Regression iwth linear models, Naive Bayes, decision trees, and other ensembles. Plus, Mlib implements Collaborative filtering, clustering with k-means, Gaussian, LDA, Associative Rule Mining, and Dimensionality Reduction. Many optimization problems are solved by using the Distributed Stochastic Gradient Descent. 
 
+14. How does Spark work in a parallel environment?
+	Spark adopts a simple model for parallel computation. A driver program interacts with the worker nodes by using the SparkContext environment variable. This interaction is transparent to the user. Each worker node executes assigned tasks and can cache locally the results for computation for future reuse. The results of computations are sent back to the driver program. 
+	
+	Code:
+		conf = SparkConf().setAppName(appName).setMaster(mastername)
+		sc = SparkContext(conf=conf) # configuration
+
+15. What is mean, variance, and covariance?
+
 
 	 
 
