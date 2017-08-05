@@ -273,8 +273,43 @@
 		url = 'http://www.fdic.gov/bank/individual/failed/banklist.html'
 		dfs = pd.read_html(url)
 		print(dfs)
-		
 
+19. Can you read JSON into Python Pandas?
+	JSON is a compact representation of structured data. This simple code snippet loads data from the network and transforms it into a Pandas data structure. 
+	Code:	
+		from urllib2 import Request, urlopen
+		import json
+		import pandas as pd
+		from pandas.io.json import json_normalize
+		path1= '42.974049,-81.205203|42.974298,-81.195755'
+		locations='+path1+'&sensor=false')
+		response = urlopen(request)
+		elevations = response.read()
+		data = pd.read_json(elevations)
+		print json_normalize(data['results'])
+
+20. Can you draw a function from Python?
+	Visualizing data is key for any machine learning activity, and a good Data Scientist know how to use data viz tools.
+	For instance Matplotlib is a convenient plotting tool in Python. The following code snippet shows how to plot a function
+	Code:
+		import matplotlib.pyplot as plt
+		import numpy as np
+		from scipy.special import expit
+
+		x = np.arange(-10. , -10., 0.2)
+		sig = expit(x)
+		plt.plot(x, sig)
+		plt.show()
+
+21. Can you represent a graph in Python?
+	Python provides a convenient library for graph representation named Networkx, which provides support for direct/indirect graphs and multigraphs. ALso many graph algorithms are already implemented in the framework. This simple code snippet computes the connected components algorithm.
+	Code:
+		import networkx as nx
+
+		G = nx.Graph()
+		# add nodes (1,2,3) and edges (1,2), (1,3)
+		G.add_edges_from([(1,2),(1,3)])
+		c = nx.connected_components(G)
 
 
 	
