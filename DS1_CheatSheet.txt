@@ -221,7 +221,19 @@
 		sc = SparkContext(conf=conf) # configuration
 
 15. What is mean, variance, and covariance?
-
+	Mean is average duh
+	Variance measures how far a set of numbers is spread out. A variance of 0 refers to a dataset of all equal numbers.  
+		A small variance describes a dataset with numbers that tend to be close to the mean, and therefore to each other. 
+		Variance is always positive. 
+		VAR(X) = E[(X-E(X)^2)]
+	Covariance is a measure of how much two random variables change together. Mathematically, 
+		COVAR(X) = E[(X-E[X])(Y-E[Y])]
+	Code:
+		import numpy as np
+		x = np.array([[0,2], [1,1], [2,0]]).T # transposed matrix 
+		print(np.mean(x[1,]))
+		print(np.var(x[1,])) # variance
+		print(np.cov(x))
 
 	 
 
