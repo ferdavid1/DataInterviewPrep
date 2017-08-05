@@ -235,9 +235,45 @@
 		print(np.var(x[1,])) # variance
 		print(np.cov(x))
 
-	 
+16. What are percentiles and quartiles?
+	A percentile is a metric indicating a value, below which a given percentage of observation falls. 
+	For instance:
+		The 50th percentile is the median of a vector of observations.
+		The 25th percentile is the first quartile, the 75th percentile the 3rd quartile. 
+	Code:
+		import numpy as np
+		x = np.array([0,1,4,5,6,8,8,9,11,10,19,19.2,19.7,3])
+		for i in [75,90,95,99]:
+			print(i, np.percentile(x,i))
 
+17. Can you transform an XML file into Python Pandas?
+	This is a question about data transformation. XML is commonly used for representing structured information, 
+	Code
+		from lxml import objectify
+		import pandas as pd
 
+		# open and parse xml
+		xml = objectify.parse(open('book.xml'))
+		root = xml.getroot()
+
+		# pandas and dataframes
+		df = pd.DataFrame(columns=('Author', 'Title', 'Genre'))
+
+		for i in range(0, 10):
+			row = dict(zip(['Author', 'Title', 'Genre'], [root.book[i].author, root.book[i].title, root.book[i].genre]))
+			rowSeries = pd.Series(row)
+			rowSeries.name = i
+			df = df.append(rowSeries)
+		print(df)	
+
+18. Can you transform HTML into Python Pandas?
+	Another question about accessing data. Python Pandas are also convenient for working with HTML files downloaded from the network. This small code fragment is all we need to download some HTML data, parse it and load it into a suitable DataFrame. 
+	Code:
+		import pandas as pd
+		url = 'http://www.fdic.gov/bank/individual/failed/banklist.html'
+		dfs = pd.read_html(url)
+		print(dfs)
+		
 
 
 
