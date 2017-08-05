@@ -382,4 +382,54 @@
 	graph.put_object('me', 'feed', message='Posting in my wall')
 
 29. What is TFxIDF?
+	TFxIDF is a weighting technique used for text classifications. The key intuition is to boost a term t, which is frequent
+	for a document d in a collection of documents D (Term Frequency = TF). 
+	But t is not so frequent in all the the remaining documents in D (Inverse Document Frequency, IDF). 
+	Mathematically:
+		TF(t,d) is the number of times for term t to appear in document d
+		DF(t, D) is the number of documents containing the term t
+		IDF(t, D) = log((|D|+1)/(DF(t,D)+1))
+	Note that if IDF(t,D) is zero, it means a term appears in all documents
+	Also note that a smoothing factor of one has been used if a term does not appear in a document for avoiding a division by zero. 
+	Spark implements TFxIDF by hashing the words into a more compact representation which avoids global and expensive terms-to-index mapping, involving all the words in the collection regardless of the server where the data has been partitioned. 
+	Code:
+		from pyspark import SparkContext
+		from pyspark.mllib.feature import HashingTF
+		from pyspark.mllib.features import IDF
+		sc = SparkContext()
+
+		# load documents (one per line)
+		documents = sc.textFile("...").map(lambda line: line.split(" "))
+
+		# hash the terms and compute TF on the documents
+		hashingTF = HashingTF()
+		tf = hashingTF.transform(documents)
+
+		# Force the real computation
+		tf.cache()
+
+		# compute the global IDF: ignore too rare terms < 2 documents
+		idf = IDF(minDocFreq=2).fit(tf)
+
+		# do the TFxIDF in a distributed fashion
+		tfidf = idf.transform(tf)
+
+30. What is 'feautures hashing'? Why is it useful for Big Data?
+	If the space of features is high dimensional, one way to reduce dimensionality is via hashing. 
 	
+	For instance:
+		We might combine two discrete but sparse features into one and only denser discrete synthetically created feature by transforming the original observations. 
+		This transformation introduces an error because it suffers from potential hash collisions, since different raw features may become the same term after hashing
+	
+	However this mode might be more compact and, in some situations, we might decide to trade off this risk either for simplicity or because this is the only viable option to handle very large datasets (Big Data situations)
+
+	More sophisticated forms of hashing such as Bloom Filters, Count Min-Sketches, minHash, and Local Senstive Hashing are more advanced techniques which will be discussed in the next volume. 
+
+31. What is 'continuous features binning'?
+	If a feature assumes continuous values then it could be convenient to discretize it via hashing or binning. This intuition is very simple: The space of continuous values is divided into buckets, in which the first ones are hashed. 
+
+32. What is an L^P normalization?
+	
+
+
+
