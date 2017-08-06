@@ -1,4 +1,5 @@
 1. What are the most import machine learning techniques?
+	
 	1. Classification (Naive Bayes, SVM, Decision Trees, Random Forest, NNs)
 	2. Regression (Linear, Logistic)
 	3. Associative Rule Learning (given a bunch of observations, learn relations between variables such that if A and B happen, C will also happen)
@@ -6,6 +7,7 @@
 	5. Density estimation (computers learn how to find statistical values that describe data - Ex: Expectation Maximization)
 
 2. Why is it important to have a robust set of metrics for machine learning?
+	
 	So that we can analytically and objectively assess how accurate our model is.
 	Examples of metrics:
 		Precision: true positives/(true + false positives)
@@ -20,6 +22,7 @@
 		print(precision, recall)
 
 3. Why are Feature extraction and feature engineering so important in machine learning?
+	
 	The features are the variables extracted from the data that are going to be used to create predictions
 		Ex:	predicting if tommorow is sunny
 			features: humidity, wind speed, historical info
@@ -37,6 +40,7 @@
 			- Binning - transformation of continous features into discrete ones (categorical)
 
 4. Can you provide an example of feature extraction?
+	
 	Machine learning on text files
 	- extract meaningful feature vectors from text. typical example of this is called bag of words
 		Bag of Words:
@@ -54,6 +58,7 @@
 			# this prints the first index of the word 'man' in the document sparse matrix
 
 5. What is a training set, validation set, a test set, and supervised/unsupervised learning?
+	
 	In ML, a set of true labels is called the 'gold set'. This set of examples is typically built manually either by human experts or via crowdsourcing with tools like the AMaon Mechanical Turk or via explicit/implicit feedback collected by users online. 
 	For instance: 
 		A gold set can contain news articles that are manually assigned to different categories by experts of the various subjects, or it might contain movies with associated rating provided by Netflix users, or ratings of images collected via crowdsourcing. See: ImageNet
@@ -69,6 +74,7 @@
 	To reiterate, the validation set is used for tuning the hyperparameters, and the testing set is for final testing on unseen data
 
 6. What is a Bias-Variance tradeoff?
+	
 	Bias and Variance are two independent sources of errors for machine learning which prevent algorithms the models learned beyong the training set.
 	
 	Bias: the error representing missing relations between features and outputs. In ML this phenomenon is called underfitting. High Bias = very bad at fitting to the model. Low bias = captures a lot of relationships between variables in the data
@@ -85,7 +91,7 @@
 
 		You want Low Bias, Low Variance
 
-		TIP to remember this - bias refers to inter-variable bias. Variance refers to across-dataset reproducibilty
+		TIP to remember this - bias refers to inter-variable bias. Variance refers to across-dataset irreproducibilty
 
 	To reduce variance:
 		- get more training data (more exposure to different ranges of data)
@@ -96,6 +102,7 @@
 		- increase complexity 
 
 7. What is cross-validation and what is overfitting?
+	
 	- As we just mentioned, overfitting refers to a high variance (low bias) model which is bad at generalizing to other data sources, but is (often) complex, and good at recognizing the relationships between variables in the training set. 
 	- The dataset can be split into training, testing/validation sets randomly, but this is not a very good strategy because of the risk that the hyper-parameters will overfit to a particular validation set
 	- enter Cross-Validation
@@ -116,6 +123,7 @@
 		print('Accuracy: {}, {}'.format(scores.mean(), scores.std()))
 
 8. Why are vectors and norms used in ML?
+	
 	Objects such as movies, songs, and documents are typically represented by means of vectors of features. Those features are a synthetic summary of the most salient and discriminative objects and their characteristics
 
 	Given a collection of vectors(the so-called vector space 'V'), a normalization on V is a function of p: V|R satisfying the following properties:
@@ -132,6 +140,7 @@
 		print(LA.norm(a))
 		print(LA.norm(a,1))
 9. What are Numpy, Scipy, and Spark essential datatypes?
+	
 	Numpy 
 		Provides efficient support for memorizing vectors and matrices and for linear algebra operations. 
 		For instance: dot(a, b[, out]) is the dot product of two vectors, while inner(a,b) and outer(a,b[, out]) are respectively the inner and outer products.
@@ -173,6 +182,7 @@
 		MSE = valueAndPreds.map(lambda(v,p): (v-p)**2).reduce(lambda x,y: x+y)/valuesAndPreds.count()
 
 11. Can you provide examples for other computations in Spark?
+	
 	- map(func) - applies a function to an entire dataset (every value therein)
 	- filter(func) - selects only elements of that list which meet the criteria to be filtered
 	- flatmap(func) - similar to map, but each input can be mapped to more than one output
@@ -205,15 +215,18 @@
 		sc.parallelize([1,2,3,4]).foreach(lambda x: accum.add(x))
 
 12. How does Python interact with Spark? 
+	
 	Spark has its own python API ("PySpark"). Spark was developed using Scala. 
 	The modules are optimized for lambda functions, for quick mapping and filtering
 	Functions used for transformations are sent to the workers for code execution, together with serialized data and instances of classes.
 	Python also supports an interactive Spark shell - ./bin/pyspark for command line control
 
 13. What is Spark support for ML?
+	
 	Spark has a powerful library called MLIB for Machine Learning. Mlib supports computation of Basic Statistics and Feature extraction, selection and transformation. It also supports Classifications and Regression iwth linear models, Naive Bayes, decision trees, and other ensembles. Plus, Mlib implements Collaborative filtering, clustering with k-means, Gaussian, LDA, Associative Rule Mining, and Dimensionality Reduction. Many optimization problems are solved by using the Distributed Stochastic Gradient Descent. 
 
 14. How does Spark work in a parallel environment?
+	
 	Spark adopts a simple model for parallel computation. A driver program interacts with the worker nodes by using the SparkContext environment variable. This interaction is transparent to the user. Each worker node executes assigned tasks and can cache locally the results for computation for future reuse. The results of computations are sent back to the driver program. 
 	
 	Code:
@@ -221,6 +234,7 @@
 		sc = SparkContext(conf=conf) # configuration
 
 15. What is mean, variance, and covariance?
+	
 	Mean is average duh
 	Variance measures how far a set of numbers is spread out. A variance of 0 refers to a dataset of all equal numbers.  
 		A small variance describes a dataset with numbers that tend to be close to the mean, and therefore to each other. 
@@ -236,6 +250,7 @@
 		print(np.cov(x))
 
 16. What are percentiles and quartiles?
+	
 	A percentile is a metric indicating a value, below which a given percentage of observation falls. 
 	For instance:
 		The 50th percentile is the median of a vector of observations.
@@ -247,6 +262,7 @@
 			print(i, np.percentile(x,i))
 
 17. Can you transform an XML file into Python Pandas?
+	
 	This is a question about data transformation. XML is commonly used for representing structured information, 
 	Code
 		from lxml import objectify
@@ -267,6 +283,7 @@
 		print(df)	
 
 18. Can you transform HTML into Python Pandas?
+	
 	Another question about accessing data. Python Pandas are also convenient for working with HTML files downloaded from the network. This small code fragment is all we need to download some HTML data, parse it and load it into a suitable DataFrame. 
 	Code:
 		import pandas as pd
@@ -275,6 +292,7 @@
 		print(dfs)
 
 19. Can you read JSON into Python Pandas?
+	
 	JSON is a compact representation of structured data. This simple code snippet loads data from the network and transforms it into a Pandas data structure. 
 	Code:	
 		from urllib2 import Request, urlopen
@@ -289,6 +307,7 @@
 		print json_normalize(data['results'])
 
 20. Can you draw a function from Python?
+	
 	Visualizing data is key for any machine learning activity, and a good Data Scientist know how to use data viz tools.
 	For instance Matplotlib is a convenient plotting tool in Python. The following code snippet shows how to plot a function
 	Code:
@@ -302,6 +321,7 @@
 		plt.show()
 
 21. Can you represent a graph in Python?
+	
 	Python provides a convenient library for graph representation named Networkx, which provides support for direct/indirect graphs and multigraphs. ALso many graph algorithms are already implemented in the framework. This simple code snippet computes the connected components algorithm.
 	Code:
 		import networkx as nx
@@ -316,6 +336,7 @@
 	Jupyter now. Run cells individually, with plots inline if you want, on the localhost server. 
 
 23. What is a convenient tool for performing data statistics?
+	
 	Pandas. 
 	Code:
 		import pandas as pd
@@ -335,6 +356,7 @@
 		print(irisDF.quantile(np.array([0,.25,.50,.75,.9,.99])))
 
 24. How is it convenient to visualize data statistics
+	
 	Pandas provides support for a boxplot vi
 	Code:
 		import pandas as pd
@@ -348,6 +370,7 @@
 	# see boxplot.py
 
 25. How to compute covariance and correlation matrices with pandas
+	
 	Pandas provides support for covariance computation. This simple code snippet computes covariance and correlation for an iris toy dataset. 
 	Code:
 		import pandas as pd
@@ -382,6 +405,7 @@
 	graph.put_object('me', 'feed', message='Posting in my wall')
 
 29. What is TFxIDF?
+	
 	TFxIDF is a weighting technique used for text classifications. The key intuition is to boost a term t, which is frequent
 	for a document d in a collection of documents D (Term Frequency = TF). 
 	But t is not so frequent in all the the remaining documents in D (Inverse Document Frequency, IDF). 
@@ -415,6 +439,7 @@
 		tfidf = idf.transform(tf)
 
 30. What is 'feautures hashing'? Why is it useful for Big Data?
+	
 	If the space of features is high dimensional, one way to reduce dimensionality is via hashing. 
 	
 	For instance:
@@ -426,9 +451,11 @@
 	More sophisticated forms of hashing such as Bloom Filters, Count Min-Sketches, minHash, and Local Senstive Hashing are more advanced techniques which will be discussed in the next volume. 
 
 31. What is 'continuous features binning'?
+	
 	If a feature assumes continuous values then it could be convenient to discretize it via hashing or binning. This intuition is very simple: The space of continuous values is divided into buckets, in which the first ones are hashed. 
 
 32. What is an L^P normalization?
+	
 	Features might be transformed in such a way that they have unit norm L^P, where L^P can be either norm-1, norm-2, norm-infinity
 	Code:
 		from pyspark.mllib.util import MLUtils
@@ -445,6 +472,7 @@
 		data1 = labels.zip(normalizer1.transform(features))
 
 33. What is a Chi Square Selection?
+	
 	Chi-Square is a statistical test used to understand if two categorical features are correlated. 
 	In this case it might be useful to discard one of them in order to keep the model simpler. 
 	This method works by ordering features based on a Chi-Squared test of independence from the class, and then by filtering
@@ -454,6 +482,52 @@
 	Spark supports Chi-Square tests for feature selection since version 1.4.0
 
 34. What is mutual information, and how can it be used for feature selection?
+	
+	Mutual information computes how much two features have in common, using the formula for information entropy
+
+35. What is a loss function, what are linear models, and what do we mean by regularization paramters in ML?
+	
+	A loss function maps a set of observed events represented by one or more variables onto a real number, which represents the associated 'cost'. 
+	ML frequently deals with modeling the observed data by minimizing the costs of a suitable loss function. 
+	In particular given an algorithmic prediction P and a true label Y from a gold set, a loss function L(p,y) measures the difference between the two
+
+	An important class of ML methods is one of the linear methods, where the task is to minimize a convex function F on a variable vector W, with K real entries W | R^k.
+
+	It should be noted that if function F is convex and has a derivative, then F will have a unique minimum and this minimum can be analytically derived.
+
+	This minimization task error can be formally expressed as min(W | R^k^F(w)) where the objective function F has training samples, a vector of true labels, and a set of weights which are algorithmically computed in such a way that the error of the model learned from the training data x is minimized. This error is expressed by a well-chosen loss function
+
+	This method is called 'linear' prediction P is a linear combination of weights W and samples X, computed with a simple vector multiplcation P = W^T * X
+
+	The factor R(W) is introduced also to control the complexity of the model. In turn the regularization hyperparamter N >= 0 balances the trade-off between the goal of minimizing the loss function and the goal of minimizing the model complexity. 
+
+	For instance, it could be sometimes better to have a slightly more expensive model in terms of loss function costs, if the model is simple from the point of view of sparsity of weights (number of zero entries in w). 
+
+	Most common loss functions and regularization methods:
+		Squared - Expresses the squared distance between the prediction and the true label
+			Used in Linear Regression - EX: expected return on stock investment
+		Logistic - Used to predict a binary response
+			Used in Logistic Regression - EX: expected click on search ads. 
+		Hinge - Classification
+			Used in SVM, for example image recognition
+
+36. What is an odd ratio?
+	
+	Given a probability P, the odd ratio simply identifies the chances for the event to happen over the chances for the event not to happen. If we take the log of this ratio, we can map the [-1,1] results into [-inf, +inf]
+
+37. What is a sigmoid function and what is a logistic function?
+	
+	Sigmoid functions map to [0,1]
+	Sigmoid functions are used frequently in machine learning, in particular for Neural Networks. 
+	The function looks like an S on the graph.
+	Basically, the sigmoid function makes it easy to map real values into probabilities
+
+	A logistic function is a particular type of sigmoid functino used in linear regression. 
+	Code:	
+		from scipy.special import expit # expit is the logistic function, the inverse of the logit func. x parameter is an array
+		expit(0.467)
+
+38. What is gradient descent?
 	
 
 
