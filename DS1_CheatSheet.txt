@@ -528,6 +528,32 @@
 		expit(0.467)
 
 38. What is gradient descent?
-	
 
+	Mathematically the gradient /\F of a function F is a vector, the components of which are the n partial derivatives of F. Similarly to the derivative, the gradient represents the slope of the function graph tangent and therefore the gradient points in the direction of the greater rate of the function increase rate, while its magnitude is the slope of the graph in that direction. As a consequence -/\F points to the directino of a function maximum decrease rate. 
 
+	In many Supervised ML problems, we need to learn a model by using a training dataset. 
+	A popular and easy-to-use technique to estimate the model parameters is to minimize the error associated to the model by using the appropriate Gradient Descent technique. The GD iteratively estimates the weights by moving in the direction which minimizes a chosen cost function at every step. 
+
+	Until either some convergence or termination citeria is met, the weight of the model are updated according the following rule:
+		Wi + 1 = Wi - a (deriv(f)/deriv(w)) where (deriv(f)/deriv(w)) is the gradient in w and 'a' is a learning parameter.
+
+	If the function is convex, then the gradient descent will find a unique minimum, otherwise the techinique can be trapped into a local minimum or it might incur into the risk of not converging. 
+
+	Therefore, it is mandatory to stop iterations if a chosen maximum number of iteration is reached. In addition to that, it could be useful to repeat the process for different initial values Wo in order to detect if the process is trapped in a local minimum. 
+
+	The learning rate parameter 'a' determines how fast or slow we will move downwards (in gradient descent) or upwards (in gradient ascent) towards the optimal solution. If 'a' (also referred to as lambda) is very large, the optimal solution will be skipped. If it is too small, we will need too many iterations to get to the optimal value. One possible solution is to scale 'a'/lambda according to how close the solution is. In other words: lambda could be scaled according to the error rate measured in each iteration. (That is soo cool!)
+
+39. What is stochastic gradient descent?
+		Many ML problems can be formulated as minimization problems of an objective function, which is the sum of many functions Fim each one associated to the i-th observation in the training set. 
+
+		The gradient /\F(w) can be computationally very expensive because at each iteration all dataset observations should be taken into account. 
+
+		One solutions is to sample a subset of summand functions at every step. This approach is called 'stochastic gradient descent' and it is very effective in the case of large-scale ML problems. 
+
+		One simple variant of stochastic gradient descent is to consider one training example at a time and update that gradient component. 
+
+		Another more sophisticated approach is called 'mini-batches', which computes the gradient against more than one training example at each step. 
+
+		This can be a vectorial operation, which is very efficient for modern computers. 
+
+40. 
