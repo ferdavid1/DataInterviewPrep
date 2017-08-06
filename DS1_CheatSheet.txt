@@ -173,12 +173,213 @@
 		MSE = valueAndPreds.map(lambda(v,p): (v-p)**2).reduce(lambda x,y: x+y)/valuesAndPreds.count()
 
 11. Can you provide examples for other computations in Spark?
+	- map(func) - applies a function to an entire dataset (every value therein)
+	- filter(func) - selects only elements of that list which meet the criteria to be filtered
+	- flatmap(func) - similar to map, but each input can be mapped to more than one output
+	- sample(withReplacement, fraction, seed) - samples a fraction of the dataset, with or without replacement, using a given random number generator seed
+	- union(otherDataset) - Returns a new Dataset that contains the union of the elements in the source dataset and argument
+	- intersection(otherDataset) - same shit as above but intersection instead of union
+	- distinct([numtasks]) - Returns a new dataset that contains the distinct elements of the source dataset. 
+	- groupByKey([numtasks]) - When called on a dataset of (K, V) pairs, a dataset of (K, Iterable(V))
+	- reduceByKey(func, [numtasks]) - When called on a dataset of (K,V) pairs, where K implements Ordered, a dataset of (K,V) pairs sorted by kets in ascending or descending order returns, as specified in the boolean ascending argument
+	- join(otherDataset, ([numtasks])) - When called on datasets of type (K,V) and (K,W), a dataset of (K,(V,W)) pairs with all pairs of elements for each key returns. Outer joins are here supported through leftOuterJoin, rightOuterJoin, and fullOuterJoin.
+	- reduce(func) - Aggregates the elemnts of the dataset using a function func (which takes two arguments and returns one). The function should be commutative and associative so that it can be computed correctly in parallel. 
+	- collect() - Returns all elements of the dataset as an array at the driver program. This is usually useful after a filter or other operations that return a sufficiently small subset of data. 
+	- count() - returns the number of elements in the dataset. 
+	- takeSample(withReplacement, num, [seed]) - Returns an array with a random sample of num elements in the dataset, with or without replacement, optionally specifying a seed for the rng
+	- countByKey() - Only avaialable on RDDs of type (K, V). A hashmap of (K, Int) pairs with the count of each key returns. 
+	- foreach(func) - Runs a function func on each element of the dataset, like map, but this is usually used for side effects of the algorithm (idk why)
+
+	- Code:
+		# map reduce
+		textFile.map(lambda line: len(line.split())).reduce(lambda a,b:a if (a>b) else b)
+
+		# word count
+		wordCounts = textFile.flatMap(lambda line: line.split()).map(lambda word: (word, 1)).reduceByKey(lambda a,b: a+b)
+
+		# broadcast - a type of read-only variable that gets cached on the spark machine
+		broadcastVar = sc.broadcast([1,2,3])
+
+		# accumulators - a different type of spark variable that is an efficient implementation for counters.
+		accum = sc.accumulator(0)
+		sc.parallelize([1,2,3,4]).foreach(lambda x: accum.add(x))
+
+12. How does Python interact with Spark? 
+	Spark has its own python API ("PySpark"). Spark was developed using Scala. 
+	The modules are optimized for lambda functions, for quick mapping and filtering
+	Functions used for transformations are sent to the workers for code execution, together with serialized data and instances of classes.
+	Python also supports an interactive Spark shell - ./bin/pyspark for command line control
+
+13. What is Spark support for ML?
+	Spark has a powerful library called MLIB for Machine Learning. Mlib supports computation of Basic Statistics and Feature extraction, selection and transformation. It also supports Classifications and Regression iwth linear models, Naive Bayes, decision trees, and other ensembles. Plus, Mlib implements Collaborative filtering, clustering with k-means, Gaussian, LDA, Associative Rule Mining, and Dimensionality Reduction. Many optimization problems are solved by using the Distributed Stochastic Gradient Descent. 
+
+14. How does Spark work in a parallel environment?
+	Spark adopts a simple model for parallel computation. A driver program interacts with the worker nodes by using the SparkContext environment variable. This interaction is transparent to the user. Each worker node executes assigned tasks and can cache locally the results for computation for future reuse. The results of computations are sent back to the driver program. 
 	
-	 
+	Code:
+		conf = SparkConf().setAppName(appName).setMaster(mastername)
+		sc = SparkContext(conf=conf) # configuration
 
+15. What is mean, variance, and covariance?
+	Mean is average duh
+	Variance measures how far a set of numbers is spread out. A variance of 0 refers to a dataset of all equal numbers.  
+		A small variance describes a dataset with numbers that tend to be close to the mean, and therefore to each other. 
+		Variance is always positive. 
+		VAR(X) = E[(X-E(X)^2)]
+	Covariance is a measure of how much two random variables change together. Mathematically, 
+		COVAR(X) = E[(X-E[X])(Y-E[Y])]
+	Code:
+		import numpy as np
+		x = np.array([[0,2], [1,1], [2,0]]).T # transposed matrix 
+		print(np.mean(x[1,]))
+		print(np.var(x[1,])) # variance
+		print(np.cov(x))
 
+16. What are percentiles and quartiles?
+	A percentile is a metric indicating a value, below which a given percentage of observation falls. 
+	For instance:
+		The 50th percentile is the median of a vector of observations.
+		The 25th percentile is the first quartile, the 75th percentile the 3rd quartile. 
+	Code:
+		import numpy as np
+		x = np.array([0,1,4,5,6,8,8,9,11,10,19,19.2,19.7,3])
+		for i in [75,90,95,99]:
+			print(i, np.percentile(x,i))
 
+17. Can you transform an XML file into Python Pandas?
+	This is a question about data transformation. XML is commonly used for representing structured information, 
+	Code
+		from lxml import objectify
+		import pandas as pd
 
+		# open and parse xml
+		xml = objectify.parse(open('book.xml'))
+		root = xml.getroot()
 
+		# pandas and dataframes
+		df = pd.DataFrame(columns=('Author', 'Title', 'Genre'))
+
+		for i in range(0, 10):
+			row = dict(zip(['Author', 'Title', 'Genre'], [root.book[i].author, root.book[i].title, root.book[i].genre]))
+			rowSeries = pd.Series(row)
+			rowSeries.name = i
+			df = df.append(rowSeries)
+		print(df)	
+
+18. Can you transform HTML into Python Pandas?
+	Another question about accessing data. Python Pandas are also convenient for working with HTML files downloaded from the network. This small code fragment is all we need to download some HTML data, parse it and load it into a suitable DataFrame. 
+	Code:
+		import pandas as pd
+		url = 'http://www.fdic.gov/bank/individual/failed/banklist.html'
+		dfs = pd.read_html(url)
+		print(dfs)
+
+19. Can you read JSON into Python Pandas?
+	JSON is a compact representation of structured data. This simple code snippet loads data from the network and transforms it into a Pandas data structure. 
+	Code:	
+		from urllib2 import Request, urlopen
+		import json
+		import pandas as pd
+		from pandas.io.json import json_normalize
+		path1= '42.974049,-81.205203|42.974298,-81.195755'
+		locations='+path1+'&sensor=false')
+		response = urlopen(request)
+		elevations = response.read()
+		data = pd.read_json(elevations)
+		print json_normalize(data['results'])
+
+20. Can you draw a function from Python?
+	Visualizing data is key for any machine learning activity, and a good Data Scientist know how to use data viz tools.
+	For instance Matplotlib is a convenient plotting tool in Python. The following code snippet shows how to plot a function
+	Code:
+		import matplotlib.pyplot as plt
+		import numpy as np
+		from scipy.special import expit
+
+		x = np.arange(-10. , -10., 0.2)
+		sig = expit(x)
+		plt.plot(x, sig)
+		plt.show()
+
+21. Can you represent a graph in Python?
+	Python provides a convenient library for graph representation named Networkx, which provides support for direct/indirect graphs and multigraphs. ALso many graph algorithms are already implemented in the framework. This simple code snippet computes the connected components algorithm.
+	Code:
+		import networkx as nx
+
+		G = nx.Graph()
+		# add nodes (1,2,3) and edges (1,2), (1,3)
+		G.add_edges_from([(1,2),(1,3)])
+		c = nx.connected_components(G)
+	# see graphs.py
+
+22. What is an ipython notebook?
+	Jupyter now. Run cells individually, with plots inline if you want, on the localhost server. 
+
+23. What is a convenient tool for performing data statistics?
+	Pandas. 
+	Code:
+		import pandas as pd
+		import numpy as np
+		from sklearn.datasets import load_iris
+		iris = load_iris()
+
+		irisNP = iris.data
+		irisDF = pd.DataFrame(iris.data, columns=iris.feature_names)
+
+		# group by target category
+		irisDF['group'] = pd.Series([iris.target_names[k] for k in iris.target], dtype='category')
+
+		# mean, std, quantile
+		print(irisDF.mean(numeric_only=True))
+		print(irisDf.std())
+		print(irisDF.quantile(np.array([0,.25,.50,.75,.9,.99])))
+
+24. How is it convenient to visualize data statistics
+	Pandas provides support for a boxplot vi
+	Code:
+		import pandas as pd
+		import numpy as np
+		import matplotlib
+		import matplotlib.pyplot as plt
+
+		df = pd.DataFrame(np.random.rand(10,5), columns=['A', 'B', 'C', 'D', 'E'])
+		df.plot(kind='box')
+		plt.show()
+	# see boxplot.py
+
+25. How to compute covariance and correlation matrices with pandas
+	Pandas provides support for covariance computation. This simple code snippet computes covariance and correlation for an iris toy dataset. 
+	Code:
+		import pandas as pd
+		import numpy as np
+		from sklearn.datasets import load_iris
+		iris = load_iris()
+
+		irisNP = iris.data
+		irisDF = pd.DataFrame(iris.data, columns=iris.feature_names)
+
+		# group by target category
+		irisDF['group'] = pd.Series([iris.target_names[k] for k in iris.target], dtype='category')
+		
+		print(irisDF.cov())
+		print(irisDF.corr())
+
+26. Twitter API
+	tweepy
+	import json of your credentials
+	find trends, people, tweets by date, time
+
+27. LinkedIn API
+	from linkedin import linkedin
+	get authorization codes from localhost 
+	see connections
+
+28. Facebook API
+	import facebook
+	graph = facebook.GraphAPI(accesstoken)
+	profile = graph.get_object('me')
+	friends = graph.get_connections('me', friends')
+	graph.put_object('me', 'feed', message='Posting in my wall')
+
+29. What is TFxIDF?
 	
-
