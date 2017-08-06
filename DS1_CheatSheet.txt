@@ -429,7 +429,31 @@
 	If a feature assumes continuous values then it could be convenient to discretize it via hashing or binning. This intuition is very simple: The space of continuous values is divided into buckets, in which the first ones are hashed. 
 
 32. What is an L^P normalization?
-	
+	Features might be transformed in such a way that they have unit norm L^P, where L^P can be either norm-1, norm-2, norm-infinity
+	Code:
+		from pyspark.mllib.util import MLUtils
+		from pyspark.mllib.linalg import Vectors
+		from pyspark.mllib.features import Normalizer
 
+		data = MLUtils.loadLibSVMFile(sc, 'data/mllib/sample_libsvm_data.txt')
+		labels = data.map(lambda x: x.label))
+		features = data.map(lambda x: x.features)
+
+		normalizer1 = Normalizer()
+
+		# scale every feature normalizing with norm-2 
+		data1 = labels.zip(normalizer1.transform(features))
+
+33. What is a Chi Square Selection?
+	Chi-Square is a statistical test used to understand if two categorical features are correlated. 
+	In this case it might be useful to discard one of them in order to keep the model simpler. 
+	This method works by ordering features based on a Chi-Squared test of independence from the class, and then by filtering
+	all top features, which are most closely related to the label. Suppose that an event has expected frequencies of observations e sub i, and observed frequencies Xi, then the Chi Square test is:
+		X^2 = Summation((e sub i - Xi)^2/ e sub i)
+
+	Spark supports Chi-Square tests for feature selection since version 1.4.0
+
+34. What is mutual information, and how can it be used for feature selection?
+	
 
 
