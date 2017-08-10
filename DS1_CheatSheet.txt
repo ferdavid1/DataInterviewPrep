@@ -544,16 +544,113 @@
 	The learning rate parameter 'a' determines how fast or slow we will move downwards (in gradient descent) or upwards (in gradient ascent) towards the optimal solution. If 'a' (also referred to as lambda) is very large, the optimal solution will be skipped. If it is too small, we will need too many iterations to get to the optimal value. One possible solution is to scale 'a'/lambda according to how close the solution is. In other words: lambda could be scaled according to the error rate measured in each iteration. (That is soo cool!)
 
 39. What is stochastic gradient descent?
-		Many ML problems can be formulated as minimization problems of an objective function, which is the sum of many functions Fim each one associated to the i-th observation in the training set. 
+	
+	Many ML problems can be formulated as minimization problems of an objective function, which is the sum of many functions Fim each one associated to the i-th observation in the training set. 
 
-		The gradient /\F(w) can be computationally very expensive because at each iteration all dataset observations should be taken into account. 
+	The gradient /\F(w) can be computationally very expensive because at each iteration all dataset observations should be taken into account. 
 
-		One solutions is to sample a subset of summand functions at every step. This approach is called 'stochastic gradient descent' and it is very effective in the case of large-scale ML problems. 
+	One solution is to sample a subset of summand functions at every step. This approach is called 'stochastic gradient descent' and it is very effective in the case of large-scale ML problems. 
 
-		One simple variant of stochastic gradient descent is to consider one training example at a time and update that gradient component. 
+	One simple variant of stochastic gradient descent is to consider one training example at a time and update that gradient component. 
 
-		Another more sophisticated approach is called 'mini-batches', which computes the gradient against more than one training example at each step. 
+	Another more sophisticated approach is called 'mini-batches', which computes the gradient against more than one training example at each step. 
 
-		This can be a vectorial operation, which is very efficient for modern computers. 
+	This can be a vectorial operation, which is very efficient for modern computers. 
 
-40. 
+40. What is Linear Least Square Regression? 
+	
+	Linear models are simple and provide data partition based on straight lines. In general, they require a reasonably small amount of training data. More complex models, such as SVM with kernels and ensembles allow data separation with more sophisticated curves, not just straight lines - but they are in general more expensive to train, require more data, and are also more expensive when they predict results on unseen data. 
+
+	In many real applications, linear models with regularizations are instead providing good performance, and are extremely fast for training or when deployed. Also linear models show a very nice characteristic, for they alow to easily understand the importance of each feature. This is called 'variable importance information' and it consists of ranking each selected feature: a highly ranked feature contributes to more to reduce the error for a model than a low ranked feature. 
+
+	So this ranking opeation can guide Data scientists to pick to right set of features by discarding some of them and by adding others. Note that a linear model with regularization provides sparse solutions for learning. 
+
+	When new unseen data is applied, the forecast can therefore be computed with very simple operations consisting of a few sums and multiplications. 
+
+	As discussed, Regression is the task of forecasting a numeric value. Linear Regression is a method of finding the minimum of weights given R^k^loss function(f(w)). R(w) is the regularizer factor. 
+
+	The minimum can be here identified using stochastic gradient descent or other more advanced shit. 
+
+	Code:
+		from sklearn.linear_model import SGDRegressor # linear reg with stochastic gradient descent
+		# alt - from pyspark.mllib.regression import LabeledPoint, LinearRegressionWithSGD
+		import numpy as np
+		from pyspark.mllib.regression import LabeledPoint
+
+		# Parse the point into a LabeledPoint made up of (label, set of features)
+
+		def parsePoint(line):
+			values = [float(x) for x in line.replace(',', '').split('')]
+			return LabeledPoint(values[0], values[1:])
+
+		# load the data into a resilient distributed data file (RDD)
+		data = sc.textFile('data/mllib/ridge-data/lpsa.data')
+
+		# transform the RDD into an RDD of LabeledPoint
+		parsedData = data.map(parsePoint)
+
+		# Build the model by training a LR on the parsedData
+		model = SGDRegressor.fit(parsedData features, parsedData labels)
+
+		# Evaluate 
+		valuesAndPreds = parsedData.map(lambda p: (p.label, model.predict(p.features)))
+
+		# compute the mean squared error (MSE) by mapping the label and prediction into the squared difference, and 
+		# reduce the distributed differences by summing them.
+		# Spark collects all the intermediate results via reduction
+		# this value is then divided by the total number of (label, prediction) tuples. 
+
+		MSE = valuesAndPreds.map(lambda (v,p): (v-p)**2).reduce(lambda x,y: x+y)) / valuesAndPreds.count()
+		print('Mean Squared Error = ' + str(MSE))
+
+41. What are Lasso, Ridge, and ElasticNet Regularizations?
+	
+	Linear Least Squares uses no regularization. Ridge regression uses L2 regularizations and Lasso uses L1. 
+	Both Lasso and Ridge produce coefficients for the learned model that are smaller than the version of regression with no regularization. However, Lasso tenfs to produce more zero coefficients, thus increasing the model sparsity and its compactness. Sometimes Ridge and Lasso are used together and those are the so-called ElasticNet models. 
+
+42. What is a Logistic Regression?
+	
+	A "Logistic Regression" is the problem of finding the minimum by SGD (or some other method) of a loss function
+	
+	Each prediction is made by using a logistic function f(h) = (1/1+e^-h), where h = wx for each new unseen observation x. 
+	Logistic Regressions are widely used to predict binary responses. 
+	
+	If (wx) > 0.5, then the outcome is positive, otherwise the outcome is negative. 
+
+	A variant of logistic regression is the multinomial one which predict K different outcomes, where one class is used as pivot and all the other ones are chosen in turn against the pivot. 
+
+	In other words, K - 1 models are run and the one with higher probability is picked as prediction. 	
+
+	Stochastic or mini-batch Gradient descent can be used for solving logistic regression problems. 
+
+	Code:
+		from pyspark.mllib.regression import LabeledPoint, LogisticRegressionWithLBFGS
+		import numpy as np
+
+		# parse the point into a LabeledPoint made up of (label, set of features)
+		def parsePoint(line):
+			values = [float(x) for x in line.replace(',', '').split('')]
+			return LabeledPoint(values[0], values[1:])
+
+		# load the data into a resilient distributed data file (RDD)
+		data = sc.textFile('data/mllib/ridge-data/lpsa.data')
+
+		# transform the RDD into an RDD of LabeledPoint
+		parsedData = data.map(parsePoint)
+
+		# Build the model by training a LR on the parsedData
+		model = SGDRegressor.fit(parsedData features, parsedData labels)
+
+		# Evaluate 
+		valuesAndPreds = parsedData.map(lambda p: (p.label, model.predict(p.features)))
+
+		# compute the mean squared error (MSE) by mapping the label and prediction into the squared difference, and 
+		# reduce the distributed differences by summing them.
+		# Spark collects all the intermediate results via reduction
+		# this value is then divided by the total number of (label, prediction) tuples. 
+
+		MSE = valuesAndPreds.map(lambda (v,p): (v-p)**2).reduce(lambda x,y: x+y)) / valuesAndPreds.count()
+		print('Mean Squared Error = ' + str(MSE))
+
+43. What is a stepwise regression?
+	In a stepwise selection
