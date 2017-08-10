@@ -1,0 +1,94 @@
+<?xml version="1.0"  encoding="UTF-8"?>
+<package xmlns="http://www.idpf.org/2007/opf" version="2.0" unique-identifier="BookId">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
+    <dc:title>The Data Science Handbook</dc:title>
+    <dc:creator opf:role="aut" opf:file-as="Carl Shan, Henry Wang, William Chen and Max Song">Carl Shan, Henry Wang, William Chen</dc:creator>
+    <dc:creator opf:role="aut">Max Song</dc:creator>
+    <dc:publisher>leanpub.com</dc:publisher>
+    <dc:identifier opf:scheme="URI" id="BookId">https://leanpub.com/datasciencehandbook</dc:identifier>
+    <dc:date>2015-05-04T05:00:00+00:00</dc:date>
+    <dc:date opf:event="modification">2015-05-04</dc:date>
+    <dc:language>en</dc:language>
+    <dc:identifier opf:scheme="calibre">8b815489-ffd3-4502-87e3-e1ca72791bd6</dc:identifier>
+    <meta name="cover" content="cover_image"/>
+    <meta name="calibre:title_sort" content="Data Science Handbook, The"/>
+    <meta name="calibre:author_link_map" content="{&quot;Max Song&quot;: &quot;&quot;, &quot;Carl Shan, Henry Wang, William Chen&quot;: &quot;&quot;}"/>
+  </metadata>
+  <manifest>
+    <item id="titlepage" href="title_page.xhtml" media-type="application/xhtml+xml"/>
+    <item id="versopage" href="verso_page.xhtml" media-type="application/xhtml+xml"/>
+    <item id="dedication" href="dedication.xhtml" media-type="application/xhtml+xml"/>
+    <item id="toc" href="toc.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter00" href="chap00.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter01" href="chap01.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter02" href="chap02.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter03" href="chap03.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter04" href="chap04.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter05" href="chap05.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter06" href="chap06.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter07" href="chap07.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter08" href="chap08.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter09" href="chap09.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter10" href="chap10.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter11" href="chap11.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter12" href="chap12.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter13" href="chap13.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter14" href="chap14.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter15" href="chap15.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter16" href="chap16.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter17" href="chap17.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter18" href="chap18.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter19" href="chap19.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter20" href="chap20.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter21" href="chap21.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter22" href="chap22.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter23" href="chap23.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter24" href="chap24.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter25" href="chap25.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter26" href="chap26.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter27" href="chap27.xhtml" media-type="application/xhtml+xml"/>
+    <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/>
+    <item id="style" href="stylesheet.css" media-type="text/css"/>
+    <item id="publisher-logo" href="images/leanpub-logo.png" media-type="image/png"/>
+    <item id="cover_image" href="images/title_page.jpg" media-type="image/jpeg"/>
+  </manifest>
+  <spine toc="ncx">
+    <itemref idref="titlepage"/>
+    <itemref idref="versopage"/>
+    <itemref idref="dedication"/>
+    <itemref idref="toc"/>
+    <itemref idref="chapter00"/>
+    <itemref idref="chapter01"/>
+    <itemref idref="chapter02"/>
+    <itemref idref="chapter03"/>
+    <itemref idref="chapter04"/>
+    <itemref idref="chapter05"/>
+    <itemref idref="chapter06"/>
+    <itemref idref="chapter07"/>
+    <itemref idref="chapter08"/>
+    <itemref idref="chapter09"/>
+    <itemref idref="chapter10"/>
+    <itemref idref="chapter11"/>
+    <itemref idref="chapter12"/>
+    <itemref idref="chapter13"/>
+    <itemref idref="chapter14"/>
+    <itemref idref="chapter15"/>
+    <itemref idref="chapter16"/>
+    <itemref idref="chapter17"/>
+    <itemref idref="chapter18"/>
+    <itemref idref="chapter19"/>
+    <itemref idref="chapter20"/>
+    <itemref idref="chapter21"/>
+    <itemref idref="chapter22"/>
+    <itemref idref="chapter23"/>
+    <itemref idref="chapter24"/>
+    <itemref idref="chapter25"/>
+    <itemref idref="chapter26"/>
+    <itemref idref="chapter27"/>
+  </spine>
+  <guide>
+    <reference href="title_page.xhtml" type="cover" title="Cover"/>
+    <reference href="toc.xhtml" type="toc" title="Table of Contents"/>
+    <reference href="chap00.xhtml" type="text" title="Start"/>
+  </guide>
+</package>
