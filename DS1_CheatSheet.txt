@@ -653,4 +653,40 @@
 		print('Mean Squared Error = ' + str(MSE))
 
 43. What is a stepwise regression?
-	In a stepwise selection
+	In a stepwise selection, the choice of predictive variables is automatically carried out by exploring the space of features. 
+
+	Stepwise regression can reduce the risk of overfitting and can help to find a simple model with good performances but it can be very expensive. 
+
+	This is particularly true if the feature space is explored brute-force with no additional hints on how to pick the right set of features. 
+
+	There are three variants of stepwise regression:
+		
+		Forward selection: Starts with no features in the model, tests the addition of each feature using some error estimation and adds the variable only if it improves the model. The selection is repeated until no feature improves the model
+
+		Backward elimination: Starts with all candidate features, tests the deletion of each feature using some error estimation and then deletes the variable that improves the model the most after being deleted. This elimination is repeated until no feature deletion improves the model.
+
+		Bidirectional elimination: Combines the previous two steps together. 
+
+44. How to include nonlinear information into linear models
+
+	Linear methods are created to make forecasts as a linear combination of features. However, if the data is inherently not linearly separable, then it is still possible to use linear models in a few situations. 
+
+	The key idea is to approximate nonlinearities in the problem as features polynomials. This is called 'Basis Expansion'.
+
+	As an example, if you believe that one feature can have quadratic impact on the forecast, then you can add the square of the feature to the feature space. Picking the right basis expansion for the right set of features is an art which requires a lot of fine-tuning and experience. We will see another example of this technique when we discuss the SVM trick. 
+
+45. What is a Naive Bayes Classifier?
+	
+	A machine learning methodology which assigns class labels to each instance of real application data. The 'naive' attribute is related to the assumption that each feature provides a probabilistic contribution to the learned model, which is independent from features. 
+
+	For instance, a text article can be assigned to the category 'sports' because it contains the word 'first', independently from the fact that it contains the word 'base'. There words are considered separately but not in correlation. Despite their naive scheme and apparently simplified assumptions, naive Bayes classifiers have worked quite well in many difficult and practical solutions. 
+
+	Mathematically the problem can be formulated by considering an instance observation characterized by means of a suitable vector n of features X = X1 + ... + Xn. Where the goal is to assign the best class probability Ck (C1 + ... Cj) conditioned to the observation of X. This is statistically described as Prob(Ck | X). Bayes Theorem allows us to estimate this probability as Prob(Ck | X) = (Prob(Ck)*Prob(X | Ck))/Prob(X)
+
+	Again, the naivete comes from the assumption the model takes, that each feature is independent from the rest. 
+
+	In order to figure out Prob(X | Ck), we need to know if the data is discrete or continuous. If discrete, things like Bernoulli and Multinomial distributions are used. If continuous, Gaussian distributions are used. 
+
+46. What is a Bernoulli and Multivariate Naive Bayes?
+
+	
