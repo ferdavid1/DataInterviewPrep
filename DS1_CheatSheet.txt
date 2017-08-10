@@ -689,4 +689,12 @@
 
 46. What is a Bernoulli and Multivariate Naive Bayes?
 
+	In Bernoulli all features are simple binary variables describing the presence or absence of one particular attribute in the observed training set. 
+
+	Bernoulli is frequently used for text classification by explicitly modeling the presence or absence of a word term Wi in the text. 
+
+	A multivariate is a variant of Bernoulli, where Xi counts the number of times an event was observed in a particular instance. Multivariates are very popular for text classifications where the text is represented by an independent collection of words: the so called 'bag of words'. 
+
+47. What is a Gaussian?
+	
 	
