@@ -697,4 +697,48 @@
 
 47. What is a Gaussian?
 	
+	A family of mathematical functions which show a characteristic symmetric 'bell curve'. 
+
+	The gaussian is a very common continous probability distribution, frequently used in stats because of the Central Limit Theorem. This states that average random variables independently drawn from independent distributions are normally distributed. 
+
+	The simplest case of normal distribution is N(1,0).
+	In the classic example, 500 random numbers are sampled with N(0,1), and associated to buckets. The drawn values have the classical bell shape. The function has its peak at the mean and 'spread' increases by increasing the standard deviation.
+
+	Code:
+		import matplotlib.pyplot as plt
+		import numpy as np
+
+		mu, sigma = 0,1
+		s = np.random.normal(mu, sigma, 500)
+		count, bins, ignored = plt.hist(s, 50, normed=True)
+		plt.plot(bins, 1/(sigma*np.sqrt(2*np.pi))*np.exp(-(bins-mu)**2/(2*sigma**2)), linewidth=2, color='r')
+		plt.show()
+	
+48. What is Standard Scaling?
+	
+	If a dataset is described by a Gaussian, then it might be convenient to transform it by scaling its features to unit variance and/or removing the mean using column summary statistics on the samples in the training set. 
+
+	Code:
+		from pyspark.mllib.util import MLUtils
+		from pyspark.mllib.linalg import Vectors
+		from pyspark.mllib.feature import StandardScaler
+
+		data = MLUtils.loadLibSVMFile(sc, "data/mllib/sample_libsvm_data.txt")
+		label = data.map(lambda x: x.label)
+		features = data.map(lambda x: x.features)
+		scaler1 = StandardScaler().fit(features)
+		scaler2 = StandardScaler(withMean=True, withStd=True).fit(features)
+		scaler3 = StandardScalerModel(scaler2.std, scaler2.mean)
+		
+		# data1 is scaled to the unit variance
+		data1 = label.zip(scaler1.transform(features))
+
+		# data2 is scaled to the unit variance and has zero mean.
+		data2 = label.zip(scaler1.transform(features.map(lambda x: Vectors.dense(x.toArray()))))
+		
+		# features are mapped into dense vectors, for avoiding exceptions
+		# for transformation with zero mean on sparse vector.
+
+49. Why are statistical distributions important?
+	
 	
