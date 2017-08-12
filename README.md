@@ -1,7 +1,7 @@
 # DataInterviewPrep
 *Personal resources in preparation of the professional data science interview.
 
-#Books inside:
+# Books inside:
 - The Data Science Handbook (a bunch of interviews with cool DS people)
 - Convex Optimization
 - The Data Science Interview (Volumes 1 and 2) - About 100 total really specific interview questions
