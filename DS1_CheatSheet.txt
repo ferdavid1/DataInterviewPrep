@@ -823,4 +823,65 @@
 
 54. What are Support Vector Machines (SVM)?	
 	
+	Support Vector Machines aim to identify a hyperplane in a high dimensional space of features. Intuitively, the best hyperplane is the one having the largest distance to the nearest data point observed in any training data. 
+
+	In fact, this hyperplane provides the best separation among the training data. 
+
+	Basically, SVM finds in the hyperplane of the plotted features the line that best and most equally separates the data. 
+
+	Code:
+		from pyspark.mllib.classification import SVMWithSGD, SVMModel
+		from pyspark.mllib.regression import LabeledPoint
+
+		# Load and parse the data into LabeledPoint
+		def parsePoint(line):
+			values = [float(x) for x in line.split(' ')]
+			return LabeledPoint(values[0], values[1:])
+		
+		data = sc.textFile("data/mllib/sample_svm_data.txt")
+		parsedData = data.map(parsePoint)
+		
+		# Build the model for SVM with Stocastic Gradient Descent
+		model = SVMWithSGD.train(parsedData, iterations=100)
+		
+		# Evaluating the model on training data
+		labelsAndPreds = parsedData.map(lambda p: (p.label, model.predict(p.features)))
+		
+		# Compute the accuracy
+		trainErr = labelsAndPreds.filter(lambda (v, p): v != p).count() / float(parsedData.count())
+		print("Training Error = " + str(trainErr))
+
+55. What are SVM Kernel Tricks?
 	
+	If a linear separation is not enough, then it is still possible to use SVM ith simple tricks. For example, if the original data consists of 3-dimensional vectors [x,y,z], then we could compute a new 9-dimensional feature vector [x,y,z,x^2,y^2,z^2,xy,xz,yz]. 
+
+	The intution here is that the Kernel methods 'remember' the i-th training example (Xi,y) and combine it with another training example.
+
+	In certain situations an additional structure is added, and the kernel is a special function which maps the input space into another input space, where two features x,y are provided from the original input space. In other words, a kernel function maps a non-linear boundary in the problem space to a linear boundary in a higher dimensional space.
+
+	Examples of kernels used in machine learning:
+
+		K(x,y) = (1 + xy)^S : Polynomial for some degrees S
+
+		K(x,y) = tanh(A(kxy - h)) : Sigmoid for some parameters k,h
+
+		K(x,y) = e^(-(x-y)^2/2A^2) : Radial basis for some parameters A
+
+56. What is K-Means Clustering?
+	
+	K-Means is a form of flat clustering where the goal is to partition space into a set of groups without creating relations among them. In the next volume, we'll see a form of hierarchical clustering where the groups are organized in a hierarchical tree.
+
+	K-Means is a form of unsupervised learning, where the actual data is grouped into K different clusters.
+
+	K-Means partitions the N  observations into K sets in such a way that the within-cluster error expressed as a sum of squares is minimized.
+
+	An approximate solution to the problem is computed iteratively. The algorithm starts by randomly picking K points in the centroids. Then, alternatively two steps are repeated until either a convergence or a stopping criteria is met. 
+
+		First, each observation is assigned to the group, the centroid of which has the least within-cluster sum of squares from the observation.
+
+		Then, the mean for each group is updated by considering the observations laying within the group. The algorithm has converged when the assignments no longer change. 
+
+		Since both steps optimize the infra-cluster distance and only a finite number of partitions exists, the algorithm must converge to a (local) optimum
+
+	K-Means++ is a variant where the initial K Clusters are spread out: The first cluster center is chosen uniformly at random from the application data points, after which each successive cluster center is chosen from the remaining data points, with a probability that is proportional to its squared distance from the closest existing cluster center point. 
+
