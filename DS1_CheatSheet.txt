@@ -778,3 +778,49 @@
 
 51. What is a Gaussian Naive Bayes?
 	
+	If the data is continuous, it might be convenient to estimate the probability by using a Gaussian distribution. So if feature Xi is continuous, we compute the mean Summation(Xi -> Ck) and the variance of Xi in Ck, then we modelthe probabilities as Gaussians.
+
+	You can check whether the data is actually showing a Gaussian distribution by using tools such as qqplot
+
+52. What is another way to use Naive Bayes with continuous data?
+	
+	Discretizing the continuous features into buckets, and using Multinomial Naive Bayes for the discrete model. However, you need to be really fucking careful about the number of buckets you use. 
+
+53. What is the Nearest Neighbor Classification?
+	
+	A 'nearest neighbor' is a very simple form of classification where each instance is assigned to the objects which are closest to the instance. 
+
+	During the training phase, the space of features is partitioned in regions according to the position of the training instance. 
+
+	During the application phase, the distance with respect to the training instances is used to classify real data. 
+
+	There are many choices that can be made/parameters that can be changed. For instance, we can consider the closest object, or we can consider up to K objects and let them vote to pick the winning class. This is the so-called K-NN classifier.
+
+	Also, we might define different types of vectorial distances (what kind of distance are you even measuring bro?) 
+
+	***Given two vectors P = (pi, ..., pn) and Q = (qi, ..., qn), there are distances as follows:
+
+		Euclidean - The Euclidean distance represents the intuitive notion of distance of two points in space (the square of x^2 distance + y^2 distance, or the 'magnitude').
+
+		Manhattan - Intuitively maps al the points into a squared grid (similar to the map of manhattan) and the connections can only happen either vertically or horizontally.
+
+		Hamming - Number of positions where the single vector components are different. 
+
+		Jaccard - Represents the similarity between two sets
+
+	Implementing the exact nearest neighbor can be very computationally expensive, therefore many approximate variants have been proposed, which are generally based on the idea of sampling the feature space. 
+
+	Code (for Knn where K=1 - Things can get way more complicated, up to KD-Trees):
+		import numpy as np
+
+		def dist(p0, p1):
+			return np.sum((p0-p1)**2) # Euclidean distance
+
+		def knn(training, trainingLabels, newPoint):
+			dists = np.array([dist(t, newPoint) for t in training])
+			nearest = dists.argmin()
+			return trainingLabels[nearest]
+
+54. What are Support Vector Machines (SVM)?	
+	
+	
