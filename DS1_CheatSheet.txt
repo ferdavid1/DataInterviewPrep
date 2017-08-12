@@ -741,4 +741,40 @@
 
 49. Why are statistical distributions important?
 	
+	Statistical distributions are important for modelling events and data. Distributions are characterized by functions such as the 'probability mass function (pmf)', which provides the probability that a discrete random variable is exactly equal to some value, and the 'cumulative distribution function (CDF)', which describes the probability of a real-valued random variable X to have a value less than or equal to x. 
+
+	In addition to the Normal dists, the following are often used in Data Science:
+
+		Bernoulli - Discrete. It takes value 1 with Probability P, and value 0, with probability function q = 1 - p.
+			A classic example is that of a single coin toss. Basically, 'if it's not one event, it's the other'.
+		
+		Binomial - Discrete. It describes the number of successes in a series of independent yes/no experiments all with the SAME probability of success.
+		
+		Poisson binomial - Describes the number of successes of independent Yes/No experiments with DIFFERENT probabilities of success. 
+
+		Poisson - Discrete. Describes the probability of events in a fixed interval of time/space with a known average rate arriving, independently of time since the last event.
+
+		Gaussian - A distribution on real. The Central Limit Theorem: every variable modelled as a sum of many variables with finite mean, variance is normal. 
+
+		Code: (Binomial)
+			import numpy as np
+			n, p = 10,.5 # number of trials, probability of each trial
+
+			s = np.random.binomial(n, p, 100)
+			print(s)
+
+50. Can you compare your data with some distribution? What is a qq-plot?
+	
+	If you want to investigate whether your data follow some distribution (normal, uniform), one useful way is to use a qq-plot, which can compare two probability distributions by plotting their quantiles against each other. If the 	distributions are similar, then the graph will show a line. THIS IS SOOOO COOL!
+
+	Code:
+		import numpy as np
+		import matplotlib.pyplot as plt
+		import scipy.stats as stats
+
+		measurements = np.random.normal(loc=40, scale=10, size=80)
+		stats.probplot(measurements, dist='norm', plot=matplotlib)
+		plt.show()
+
+51. What is a Gaussian Naive Bayes?
 	
