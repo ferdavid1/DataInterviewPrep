@@ -1,5 +1,5 @@
 # DataInterviewPrep
-*Personal resources in preparation of the professional data science interview.
+*Personal resources in preparation of the professional data science interview.*
 
 # Books inside:
 - The Data Science Handbook (a bunch of interviews with cool DS people)
