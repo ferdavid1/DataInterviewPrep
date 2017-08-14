@@ -1,0 +1,9 @@
+An abstract data type (ADT) is a mathematical model for a certain class of datastructures that have similar behavior. Different classes of abstract data typeshave many different but functionally equivalent data structures that implement them.
+
+Data structures can be classified as either contiguous (composed of single slabs of memory) or linked (distinct chunks of memory bound together by pointers)
+
+In Python, contiguously-allocated structures include strings, lists, tuples, and dictionaries
+
+In the following sections we will learn how to write abstract data structures, which can either use Python's contiguous structures or be made of pointers
+
+

@@ -1,0 +1,887 @@
+1. What are the most important machine learning techniques?
+	
+	1. Classification (Naive Bayes, SVM, Decision Trees, Random Forest, NNs)
+	2. Regression (Linear, Logistic)
+	3. Associative Rule Learning (given a bunch of observations, learn relations between variables such that if A and B happen, C will also happen)
+	4. Clustering (computers learn how to partition observations in various subsets, so that each partition will be made up of similar observations according to some metric)
+	5. Density estimation (computers learn how to find statistical values that describe data - Ex: Expectation Maximization)
+
+2. Why is it important to have a robust set of metrics for machine learning?
+	
+	So that we can analytically and objectively assess how accurate our model is.
+	Examples of metrics:
+		Precision: true positives/(true + false positives)
+		Recall: true positives/(true positives + false negatives)
+		F1: (2*precision*recall)/(precision + recall)
+	Implementing these metrics:
+		import numpy as np
+		from sklearn.metrics import precision_recall_curve
+		y_true = np.array([some array])
+		y_scores = np.array([some other array])
+		precision, recall, thresholds = precision_recall_curve(y_true, y_scores)
+		print(precision, recall)
+
+3. Why are Feature extraction and feature engineering so important in machine learning?
+	
+	The features are the variables extracted from the data that are going to be used to create predictions
+		Ex:	predicting if tommorow is sunny
+			features: humidity, wind speed, historical info
+		features can be categorical or numerical(continuous)
+	ETL is the process of Extraction, Transformation, and Loading of features from real data for creating various learning sets. 
+		Transformation refers to operations such as: 
+			- feature weighting
+				Ex: TFxIDF - feature weighting used in text classification
+			- highly correlated feature discarding
+				Ex: ChiSquare - filtering of highly correlated features
+			- creation of synthetic features derivative of the one observed in the data
+				Ex: Kernel Trick
+			- reduction of high dimensional features into lower ones
+				Ex: Hashing, PCA
+			- Binning - transformation of continous features into discrete ones (categorical)
+
+4. Can you provide an example of feature extraction?
+	
+	Machine learning on text files
+	- extract meaningful feature vectors from text. typical example of this is called bag of words
+		Bag of Words:
+			- Each word 'w' in the text collection is associated with a unique integer 'j = wordld(w)' associated to it
+			- For each document 'i', the number of occurences of each word 'w' is computed and this value is stored in a matrix M(i,j). Please, note that M is typically a sparse matrix when a word in not present in a document, its count will be zero
+			- Numpy, sci-kit learn, and Spark all support sparse vectors
+		Sklearn implementation:
+			from sklearn.datasets import fetch_20newsgroups
+			from sklearn.feature_extraction.text import CountVectorizer
+			categories = ['alt.atheism']
+			newsgroups_train = fetch_20newsgroups(subset='train', categories= categories)
+			count_vect=CountVectorizer()
+			Train_counts = count_vect.fit_transform(newsgroups_train.data)
+			print(count_vect.vocabulary_.get(u'man'))
+			# this prints the first index of the word 'man' in the document sparse matrix
+
+5. What is a training set, validation set, a test set, and supervised/unsupervised learning?
+	
+	In ML, a set of true labels is called the 'gold set'. This set of examples is typically built manually either by human experts or via crowdsourcing with tools like the AMaon Mechanical Turk or via explicit/implicit feedback collected by users online. 
+	For instance: 
+		A gold set can contain news articles that are manually assigned to different categories by experts of the various subjects, or it might contain movies with associated rating provided by Netflix users, or ratings of images collected via crowdsourcing. See: ImageNet
+	Supervised machine learning consists of four phases:
+		1. Training phase: A sample extracted from the gold set is used to learn a famiily of data models. Each model can be generated from this family by choosing an appropriate set of hyper-paramters, i.e factors which can be used for algorithm fine-tuning
+		2. Validation phase:
+			The best learned model is selected from the family by picking hyper-parameters which minimize a computed error function on a gold set sample called 'validation set'; this phase is used for identifying the best configuration for a given algorithm
+		3. Test phase: The for the best learned model is evaluated on a gold set sample called 'test set'. This phase is useful for comparing models built by adopting different algorithms
+		4. Application phase: The learned model is applied to the real-world data. 
+		Basically, if a 70-30 split, 70 is training, 20 is validation, 10 is testing 
+	In unsupervised machine learning, there is only test and application phases because there is no model to be learned a-priori. In fact unsupervised algorithms adapt dynamically to the observed data. 
+
+	To reiterate, the validation set is used for tuning the hyperparameters, and the testing set is for final testing on unseen data
+
+6. What is a Bias-Variance tradeoff?
+	
+	Bias and Variance are two independent sources of errors for machine learning which prevent algorithms the models learned beyong the training set.
+	
+	Bias: the error representing missing relations between features and outputs. In ML this phenomenon is called underfitting. High Bias = very bad at fitting to the model. Low bias = captures a lot of relationships between variables in the data
+
+	Variance: the error representing sensitiveness to small training data fluctuations. In ML this phenomenon is called overfitting. High variance = high sensitivity to small changes = bad generalizability to a different dataset
+
+	Algos can have:
+		Low Bias, High Variance (complex algos):
+			good at inter-variable relationships, bad at generalization
+		High Bias, Low Variance (simpler algos):
+			Bad at inter-variable relationships, good at generalization
+		
+		Basically, simple algorithms suck but generalize pretty consistently. Complex ones are really good but suck at generalizing
+
+		You want Low Bias, Low Variance
+
+		TIP to remember this - bias refers to inter-variable bias. Variance refers to across-dataset irreproducibilty
+
+	To reduce variance:
+		- get more training data (more exposure to different ranges of data)
+		- decrease the complexity
+
+	To reduce bias:
+		- add more features (not data, since the bias will still be skewed towards one feature if its highly biased)
+		- increase complexity 
+
+7. What is cross-validation and what is overfitting?
+	
+	- As we just mentioned, overfitting refers to a high variance (low bias) model which is bad at generalizing to other data sources, but is (often) complex, and good at recognizing the relationships between variables in the training set. 
+	- The dataset can be split into training, testing/validation sets randomly, but this is not a very good strategy because of the risk that the hyper-parameters will overfit to a particular validation set
+	- enter Cross-Validation
+		The test set is split in K smaller sets called folds, and the model i then learned on K -1 folds, while the remaining data is used for validation. The process is repeated on a loop and the metrics achieved for each iteration are averaged. Am example of cross validation is implemented on a Support Vector Machine (SVM) classification below.
+	- Stratified K-Fold is a varation of k-fold where each set contains approximately the same balanced percent of samples for each target class as the complete set
+	- Code implementation:
+		import numpy as np
+		from sklearn import cross_validation
+		from sklearn import datasets
+		from sklearn import svm
+		diabets = datasets.load_diabetes()
+		X_train, X_test, y_train, y_test = cross_validation.train_test_split(diabets.data, diabets.target, test_size=0.2, random_state=0) # 80/20 split
+		print(X_train.shape, y_train.shape)
+		print(X_test.shape, y_train.shape)
+		clf = svm.SVC(kernel='linear', C=1) # support vector classifier
+		scores = cross_validation.cross_val_score(clf, diabets.data, diabets.target, cv=4) # K=4
+		print(scores)
+		print('Accuracy: {}, {}'.format(scores.mean(), scores.std()))
+
+8. Why are vectors and norms used in ML?
+	
+	Objects such as movies, songs, and documents are typically represented by means of vectors of features. Those features are a synthetic summary of the most salient and discriminative objects and their characteristics
+
+	Given a collection of vectors(the so-called vector space 'V'), a normalization on V is a function of p: V|R satisfying the following properties:
+		For all complex numbers a and all u,v|V,:
+			1. P(av) = |a| P(v)
+			2. P(u + v) <= P(u) + P(v)
+			3. if P(v) = 0, then v is a zero vector
+		The intuitive notion of length for a vector is captured by the norm 2
+			||x||2 = sqrt(x^2+...+x^2 sub n)
+	Code:
+		from numpy import linalg as LA
+		import numpy as np
+		a = np.arange(22)
+		print(LA.norm(a))
+		print(LA.norm(a,1))
+9. What are Numpy, Scipy, and Spark essential datatypes?
+	
+	Numpy 
+		Provides efficient support for memorizing vectors and matrices and for linear algebra operations. 
+		For instance: dot(a, b[, out]) is the dot product of two vectors, while inner(a,b) and outer(a,b[, out]) are respectively the inner and outer products.
+	Scipy 
+		Provides support for the sparse matrices and vectors with multiple memorization strategies in order to save space when dealing with zero entries. In particular the COOrdinate format specifies the nonzero V value for the coordinates (i,j), while the Compressed Sparse Column matrix (CSC) satisfies the relationship M[row_ind[k], col_ind[k]] = data[k]
+	Spark 
+		Has many naive datatypes for local and distributed computations. The primary data abstraction is a distributed collection of items called "Resilient Distributed Dataset (RDD)". RDDs can be created from Hadoop InputFormats or by transforming other RDDs. Numpy arrays, Python list and Scipy CSC sparse matrices are all supported. In addition,  the MLIB, the Spark library for machine learning, supports SparseVectors and LabeledPoint, i.e. local vectors, either dense or sparse, associated with a label/response.
+	Code
+		import numpy as np
+		import scipy.sparse as csr_matrix
+		M = csr_matrix([[4,1,0], [4,0,3], [0,0,1]])
+
+		from pyspark.mllib.linalg import SparseVector
+		from pyspark.mllib.regression import LabeledPoint
+		label = 0.0
+		point = LabeledPoint(label, SparseVector(3, [0,2], [1.0, 3.0]))
+		from pyspark import SparkContext
+		sc = SparkContext()
+		textRDD = sc.textFile('README.md')
+		print(textRDD.count())
+
+10. Can you provide an example for Map and Reduce in Spark? (Let's compute the Mean Square Error)
+	
+	Spark is a powerful paradigm for parallel computations which are mapped into multiple servers with no need of dealing with 
+	low level operations such as scheduling, data partitioning, communication and recovery. Those low level operations were typically exposed to the programmers by previously paradigms. Now Spark solves these problems on our behalf. 
+
+	A simple form of parallel computation supported by Spark is the "Map and Reduce" which has been made popular by Google.
+	'MapReduce' mappers receive (key, value) pairs and output (key, value). 
+	Partitioners split the keys into partitions and then shuffle the data.
+	Sorters perform the grouping
+	Reducers receive (key, iterable[value] and output(key, value))
+
+	In this framework a set of keywords is mapped into a number of workers (e.g. parallel servers available for computation) and the results are then reduced (e.g. collected) by applying a "reduce" operator. The reduce operator could be very simple(for instance a sum) or sophisticated (e.g. a user-defined function)
+
+	EX: Mean Square Error - the average of the squares of the difference between the estimator and what is estimated. 
+	The code implementation adopts python lambda computation. 
+
+	Code
+		MSE = valueAndPreds.map(lambda(v,p): (v-p)**2).reduce(lambda x,y: x+y)/valuesAndPreds.count()
+
+11. Can you provide examples for other computations in Spark?
+	
+	- map(func) - applies a function to an entire dataset (every value therein)
+	- filter(func) - selects only elements of that list which meet the criteria to be filtered
+	- flatmap(func) - similar to map, but each input can be mapped to more than one output
+	- sample(withReplacement, fraction, seed) - samples a fraction of the dataset, with or without replacement, using a given random number generator seed
+	- union(otherDataset) - Returns a new Dataset that contains the union of the elements in the source dataset and argument
+	- intersection(otherDataset) - same shit as above but intersection instead of union
+	- distinct([numtasks]) - Returns a new dataset that contains the distinct elements of the source dataset. 
+	- groupByKey([numtasks]) - When called on a dataset of (K, V) pairs, a dataset of (K, Iterable(V))
+	- reduceByKey(func, [numtasks]) - When called on a dataset of (K,V) pairs, where K implements Ordered, a dataset of (K,V) pairs sorted by kets in ascending or descending order returns, as specified in the boolean ascending argument
+	- join(otherDataset, ([numtasks])) - When called on datasets of type (K,V) and (K,W), a dataset of (K,(V,W)) pairs with all pairs of elements for each key returns. Outer joins are here supported through leftOuterJoin, rightOuterJoin, and fullOuterJoin.
+	- reduce(func) - Aggregates the elemnts of the dataset using a function func (which takes two arguments and returns one). The function should be commutative and associative so that it can be computed correctly in parallel. 
+	- collect() - Returns all elements of the dataset as an array at the driver program. This is usually useful after a filter or other operations that return a sufficiently small subset of data. 
+	- count() - returns the number of elements in the dataset. 
+	- takeSample(withReplacement, num, [seed]) - Returns an array with a random sample of num elements in the dataset, with or without replacement, optionally specifying a seed for the rng
+	- countByKey() - Only avaialable on RDDs of type (K, V). A hashmap of (K, Int) pairs with the count of each key returns. 
+	- foreach(func) - Runs a function func on each element of the dataset, like map, but this is usually used for side effects of the algorithm (idk why)
+
+	- Code:
+		# map reduce
+		textFile.map(lambda line: len(line.split())).reduce(lambda a,b:a if (a>b) else b)
+
+		# word count
+		wordCounts = textFile.flatMap(lambda line: line.split()).map(lambda word: (word, 1)).reduceByKey(lambda a,b: a+b)
+
+		# broadcast - a type of read-only variable that gets cached on the spark machine
+		broadcastVar = sc.broadcast([1,2,3])
+
+		# accumulators - a different type of spark variable that is an efficient implementation for counters.
+		accum = sc.accumulator(0)
+		sc.parallelize([1,2,3,4]).foreach(lambda x: accum.add(x))
+
+12. How does Python interact with Spark? 
+	
+	Spark has its own python API ("PySpark"). Spark was developed using Scala. 
+	The modules are optimized for lambda functions, for quick mapping and filtering
+	Functions used for transformations are sent to the workers for code execution, together with serialized data and instances of classes.
+	Python also supports an interactive Spark shell - ./bin/pyspark for command line control
+
+13. What is Spark support for ML?
+	
+	Spark has a powerful library called MLIB for Machine Learning. Mlib supports computation of Basic Statistics and Feature extraction, selection and transformation. It also supports Classifications and Regression iwth linear models, Naive Bayes, decision trees, and other ensembles. Plus, Mlib implements Collaborative filtering, clustering with k-means, Gaussian, LDA, Associative Rule Mining, and Dimensionality Reduction. Many optimization problems are solved by using the Distributed Stochastic Gradient Descent. 
+
+14. How does Spark work in a parallel environment?
+	
+	Spark adopts a simple model for parallel computation. A driver program interacts with the worker nodes by using the SparkContext environment variable. This interaction is transparent to the user. Each worker node executes assigned tasks and can cache locally the results for computation for future reuse. The results of computations are sent back to the driver program. 
+	
+	Code:
+		conf = SparkConf().setAppName(appName).setMaster(mastername)
+		sc = SparkContext(conf=conf) # configuration
+
+15. What is mean, variance, and covariance?
+	
+	Mean is average duh
+	Variance measures how far a set of numbers is spread out. A variance of 0 refers to a dataset of all equal numbers.  
+		A small variance describes a dataset with numbers that tend to be close to the mean, and therefore to each other. 
+		Variance is always positive. 
+		VAR(X) = E[(X-E(X)^2)]
+	Covariance is a measure of how much two random variables change together. Mathematically, 
+		COVAR(X) = E[(X-E[X])(Y-E[Y])]
+	Code:
+		import numpy as np
+		x = np.array([[0,2], [1,1], [2,0]]).T # transposed matrix 
+		print(np.mean(x[1,]))
+		print(np.var(x[1,])) # variance
+		print(np.cov(x))
+
+16. What are percentiles and quartiles?
+	
+	A percentile is a metric indicating a value, below which a given percentage of observation falls. 
+	For instance:
+		The 50th percentile is the median of a vector of observations.
+		The 25th percentile is the first quartile, the 75th percentile the 3rd quartile. 
+	Code:
+		import numpy as np
+		x = np.array([0,1,4,5,6,8,8,9,11,10,19,19.2,19.7,3])
+		for i in [75,90,95,99]:
+			print(i, np.percentile(x,i))
+
+17. Can you transform an XML file into Python Pandas?
+	
+	This is a question about data transformation. XML is commonly used for representing structured information, 
+	Code
+		from lxml import objectify
+		import pandas as pd
+
+		# open and parse xml
+		xml = objectify.parse(open('book.xml'))
+		root = xml.getroot()
+
+		# pandas and dataframes
+		df = pd.DataFrame(columns=('Author', 'Title', 'Genre'))
+
+		for i in range(0, 10):
+			row = dict(zip(['Author', 'Title', 'Genre'], [root.book[i].author, root.book[i].title, root.book[i].genre]))
+			rowSeries = pd.Series(row)
+			rowSeries.name = i
+			df = df.append(rowSeries)
+		print(df)	
+
+18. Can you transform HTML into Python Pandas?
+	
+	Another question about accessing data. Python Pandas are also convenient for working with HTML files downloaded from the network. This small code fragment is all we need to download some HTML data, parse it and load it into a suitable DataFrame. 
+	Code:
+		import pandas as pd
+		url = 'http://www.fdic.gov/bank/individual/failed/banklist.html'
+		dfs = pd.read_html(url)
+		print(dfs)
+
+19. Can you read JSON into Python Pandas?
+	
+	JSON is a compact representation of structured data. This simple code snippet loads data from the network and transforms it into a Pandas data structure. 
+	Code:	
+		from urllib2 import Request, urlopen
+		import json
+		import pandas as pd
+		from pandas.io.json import json_normalize
+		path1= '42.974049,-81.205203|42.974298,-81.195755'
+		locations='+path1+'&sensor=false')
+		response = urlopen(request)
+		elevations = response.read()
+		data = pd.read_json(elevations)
+		print json_normalize(data['results'])
+
+20. Can you draw a function from Python?
+	
+	Visualizing data is key for any machine learning activity, and a good Data Scientist know how to use data viz tools.
+	For instance Matplotlib is a convenient plotting tool in Python. The following code snippet shows how to plot a function
+	Code:
+		import matplotlib.pyplot as plt
+		import numpy as np
+		from scipy.special import expit
+
+		x = np.arange(-10. , -10., 0.2)
+		sig = expit(x)
+		plt.plot(x, sig)
+		plt.show()
+
+21. Can you represent a graph in Python?
+	
+	Python provides a convenient library for graph representation named Networkx, which provides support for direct/indirect graphs and multigraphs. ALso many graph algorithms are already implemented in the framework. This simple code snippet computes the connected components algorithm.
+	Code:
+		import networkx as nx
+
+		G = nx.Graph()
+		# add nodes (1,2,3) and edges (1,2), (1,3)
+		G.add_edges_from([(1,2),(1,3)])
+		c = nx.connected_components(G)
+	# see graphs.py
+
+22. What is an ipython notebook?
+	Jupyter now. Run cells individually, with plots inline if you want, on the localhost server. 
+
+23. What is a convenient tool for performing data statistics?
+	
+	Pandas. 
+	Code:
+		import pandas as pd
+		import numpy as np
+		from sklearn.datasets import load_iris
+		iris = load_iris()
+
+		irisNP = iris.data
+		irisDF = pd.DataFrame(iris.data, columns=iris.feature_names)
+
+		# group by target category
+		irisDF['group'] = pd.Series([iris.target_names[k] for k in iris.target], dtype='category')
+
+		# mean, std, quantile
+		print(irisDF.mean(numeric_only=True))
+		print(irisDf.std())
+		print(irisDF.quantile(np.array([0,.25,.50,.75,.9,.99])))
+
+24. How is it convenient to visualize data statistics
+	
+	Pandas provides support for a boxplot vi
+	Code:
+		import pandas as pd
+		import numpy as np
+		import matplotlib
+		import matplotlib.pyplot as plt
+
+		df = pd.DataFrame(np.random.rand(10,5), columns=['A', 'B', 'C', 'D', 'E'])
+		df.plot(kind='box')
+		plt.show()
+	# see boxplot.py
+
+25. How to compute covariance and correlation matrices with pandas
+	
+	Pandas provides support for covariance computation. This simple code snippet computes covariance and correlation for an iris toy dataset. 
+	Code:
+		import pandas as pd
+		import numpy as np
+		from sklearn.datasets import load_iris
+		iris = load_iris()
+
+		irisNP = iris.data
+		irisDF = pd.DataFrame(iris.data, columns=iris.feature_names)
+
+		# group by target category
+		irisDF['group'] = pd.Series([iris.target_names[k] for k in iris.target], dtype='category')
+		
+		print(irisDF.cov())
+		print(irisDF.corr())
+
+26. Twitter API
+	tweepy
+	import json of your credentials
+	find trends, people, tweets by date, time
+
+27. LinkedIn API
+	from linkedin import linkedin
+	get authorization codes from localhost 
+	see connections
+
+28. Facebook API
+	import facebook
+	graph = facebook.GraphAPI(accesstoken)
+	profile = graph.get_object('me')
+	friends = graph.get_connections('me', friends')
+	graph.put_object('me', 'feed', message='Posting in my wall')
+
+29. What is TFxIDF?
+	
+	TFxIDF is a weighting technique used for text classifications. The key intuition is to boost a term t, which is frequent
+	for a document d in a collection of documents D (Term Frequency = TF). 
+	But t is not so frequent in all the the remaining documents in D (Inverse Document Frequency, IDF). 
+	Mathematically:
+		TF(t,d) is the number of times for term t to appear in document d
+		DF(t, D) is the number of documents containing the term t
+		IDF(t, D) = log((|D|+1)/(DF(t,D)+1))
+	Note that if IDF(t,D) is zero, it means a term appears in all documents
+	Also note that a smoothing factor of one has been used if a term does not appear in a document for avoiding a division by zero. 
+	Spark implements TFxIDF by hashing the words into a more compact representation which avoids global and expensive terms-to-index mapping, involving all the words in the collection regardless of the server where the data has been partitioned. 
+	Code:
+		from pyspark import SparkContext
+		from pyspark.mllib.feature import HashingTF
+		from pyspark.mllib.features import IDF
+		sc = SparkContext()
+
+		# load documents (one per line)
+		documents = sc.textFile("...").map(lambda line: line.split(" "))
+
+		# hash the terms and compute TF on the documents
+		hashingTF = HashingTF()
+		tf = hashingTF.transform(documents)
+
+		# Force the real computation
+		tf.cache()
+
+		# compute the global IDF: ignore too rare terms < 2 documents
+		idf = IDF(minDocFreq=2).fit(tf)
+
+		# do the TFxIDF in a distributed fashion
+		tfidf = idf.transform(tf)
+
+30. What is 'feautures hashing'? Why is it useful for Big Data?
+	
+	If the space of features is high dimensional, one way to reduce dimensionality is via hashing. 
+	
+	For instance:
+		We might combine two discrete but sparse features into one and only denser discrete synthetically created feature by transforming the original observations. 
+		This transformation introduces an error because it suffers from potential hash collisions, since different raw features may become the same term after hashing
+	
+	However this mode might be more compact and, in some situations, we might decide to trade off this risk either for simplicity or because this is the only viable option to handle very large datasets (Big Data situations)
+
+	More sophisticated forms of hashing such as Bloom Filters, Count Min-Sketches, minHash, and Local Senstive Hashing are more advanced techniques which will be discussed in the next volume. 
+
+31. What is 'continuous features binning'?
+	
+	If a feature assumes continuous values then it could be convenient to discretize it via hashing or binning. This intuition is very simple: The space of continuous values is divided into buckets, in which the first ones are hashed. 
+
+32. What is an L^P normalization?
+	
+	Features might be transformed in such a way that they have unit norm L^P, where L^P can be either norm-1, norm-2, norm-infinity
+	Code:
+		from pyspark.mllib.util import MLUtils
+		from pyspark.mllib.linalg import Vectors
+		from pyspark.mllib.features import Normalizer
+
+		data = MLUtils.loadLibSVMFile(sc, 'data/mllib/sample_libsvm_data.txt')
+		labels = data.map(lambda x: x.label))
+		features = data.map(lambda x: x.features)
+
+		normalizer1 = Normalizer()
+
+		# scale every feature normalizing with norm-2 
+		data1 = labels.zip(normalizer1.transform(features))
+
+33. What is a Chi Square Selection?
+	
+	Chi-Square is a statistical test used to understand if two categorical features are correlated. 
+	In this case it might be useful to discard one of them in order to keep the model simpler. 
+	This method works by ordering features based on a Chi-Squared test of independence from the class, and then by filtering
+	all top features, which are most closely related to the label. Suppose that an event has expected frequencies of observations e sub i, and observed frequencies Xi, then the Chi Square test is:
+		X^2 = Summation((e sub i - Xi)^2/ e sub i)
+
+	Spark supports Chi-Square tests for feature selection since version 1.4.0
+
+34. What is mutual information, and how can it be used for feature selection?
+	
+	Mutual information computes how much two features have in common, using the formula for information entropy
+
+35. What is a loss function, what are linear models, and what do we mean by regularization paramters in ML?
+	
+	A loss function maps a set of observed events represented by one or more variables onto a real number, which represents the associated 'cost'. 
+	ML frequently deals with modeling the observed data by minimizing the costs of a suitable loss function. 
+	In particular given an algorithmic prediction P and a true label Y from a gold set, a loss function L(p,y) measures the difference between the two
+
+	An important class of ML methods is one of the linear methods, where the task is to minimize a convex function F on a variable vector W, with K real entries W | R^k.
+
+	It should be noted that if function F is convex and has a derivative, then F will have a unique minimum and this minimum can be analytically derived.
+
+	This minimization task error can be formally expressed as min(W | R^k^F(w)) where the objective function F has training samples, a vector of true labels, and a set of weights which are algorithmically computed in such a way that the error of the model learned from the training data x is minimized. This error is expressed by a well-chosen loss function
+
+	This method is called 'linear' prediction P is a linear combination of weights W and samples X, computed with a simple vector multiplcation P = W^T * X
+
+	The factor R(W) is introduced also to control the complexity of the model. In turn the regularization hyperparamter N >= 0 balances the trade-off between the goal of minimizing the loss function and the goal of minimizing the model complexity. 
+
+	For instance, it could be sometimes better to have a slightly more expensive model in terms of loss function costs, if the model is simple from the point of view of sparsity of weights (number of zero entries in w). 
+
+	Most common loss functions and regularization methods:
+		Squared - Expresses the squared distance between the prediction and the true label
+			Used in Linear Regression - EX: expected return on stock investment
+		Logistic - Used to predict a binary response
+			Used in Logistic Regression - EX: expected click on search ads. 
+		Hinge - Classification
+			Used in SVM, for example image recognition
+
+36. What is an odd ratio?
+	
+	Given a probability P, the odd ratio simply identifies the chances for the event to happen over the chances for the event not to happen. If we take the log of this ratio, we can map the [-1,1] results into [-inf, +inf]
+
+37. What is a sigmoid function and what is a logistic function?
+	
+	Sigmoid functions map to [0,1]
+	Sigmoid functions are used frequently in machine learning, in particular for Neural Networks. 
+	The function looks like an S on the graph.
+	Basically, the sigmoid function makes it easy to map real values into probabilities
+
+	A logistic function is a particular type of sigmoid functino used in linear regression. 
+	Code:	
+		from scipy.special import expit # expit is the logistic function, the inverse of the logit func. x parameter is an array
+		expit(0.467)
+
+38. What is gradient descent?
+
+	Mathematically the gradient /\F of a function F is a vector, the components of which are the n partial derivatives of F. Similarly to the derivative, the gradient represents the slope of the function graph tangent and therefore the gradient points in the direction of the greater rate of the function increase rate, while its magnitude is the slope of the graph in that direction. As a consequence -/\F points to the directino of a function maximum decrease rate. 
+
+	In many Supervised ML problems, we need to learn a model by using a training dataset. 
+	A popular and easy-to-use technique to estimate the model parameters is to minimize the error associated to the model by using the appropriate Gradient Descent technique. The GD iteratively estimates the weights by moving in the direction which minimizes a chosen cost function at every step. 
+
+	Until either some convergence or termination citeria is met, the weight of the model are updated according the following rule:
+		Wi + 1 = Wi - a (deriv(f)/deriv(w)) where (deriv(f)/deriv(w)) is the gradient in w and 'a' is a learning parameter.
+
+	If the function is convex, then the gradient descent will find a unique minimum, otherwise the techinique can be trapped into a local minimum or it might incur into the risk of not converging. 
+
+	Therefore, it is mandatory to stop iterations if a chosen maximum number of iteration is reached. In addition to that, it could be useful to repeat the process for different initial values Wo in order to detect if the process is trapped in a local minimum. 
+
+	The learning rate parameter 'a' determines how fast or slow we will move downwards (in gradient descent) or upwards (in gradient ascent) towards the optimal solution. If 'a' (also referred to as lambda) is very large, the optimal solution will be skipped. If it is too small, we will need too many iterations to get to the optimal value. One possible solution is to scale 'a'/lambda according to how close the solution is. In other words: lambda could be scaled according to the error rate measured in each iteration. (That is soo cool!)
+
+39. What is stochastic gradient descent?
+	
+	Many ML problems can be formulated as minimization problems of an objective function, which is the sum of many functions Fim each one associated to the i-th observation in the training set. 
+
+	The gradient /\F(w) can be computationally very expensive because at each iteration all dataset observations should be taken into account. 
+
+	One solution is to sample a subset of summand functions at every step. This approach is called 'stochastic gradient descent' and it is very effective in the case of large-scale ML problems. 
+
+	One simple variant of stochastic gradient descent is to consider one training example at a time and update that gradient component. 
+
+	Another more sophisticated approach is called 'mini-batches', which computes the gradient against more than one training example at each step. 
+
+	This can be a vectorial operation, which is very efficient for modern computers. 
+
+40. What is Linear Least Square Regression? 
+	
+	Linear models are simple and provide data partition based on straight lines. In general, they require a reasonably small amount of training data. More complex models, such as SVM with kernels and ensembles allow data separation with more sophisticated curves, not just straight lines - but they are in general more expensive to train, require more data, and are also more expensive when they predict results on unseen data. 
+
+	In many real applications, linear models with regularizations are instead providing good performance, and are extremely fast for training or when deployed. Also linear models show a very nice characteristic, for they alow to easily understand the importance of each feature. This is called 'variable importance information' and it consists of ranking each selected feature: a highly ranked feature contributes to more to reduce the error for a model than a low ranked feature. 
+
+	So this ranking opeation can guide Data scientists to pick to right set of features by discarding some of them and by adding others. Note that a linear model with regularization provides sparse solutions for learning. 
+
+	When new unseen data is applied, the forecast can therefore be computed with very simple operations consisting of a few sums and multiplications. 
+
+	As discussed, Regression is the task of forecasting a numeric value. Linear Regression is a method of finding the minimum of weights given R^k^loss function(f(w)). R(w) is the regularizer factor. 
+
+	The minimum can be here identified using stochastic gradient descent or other more advanced shit. 
+
+	Code:
+		from sklearn.linear_model import SGDRegressor # linear reg with stochastic gradient descent
+		# alt - from pyspark.mllib.regression import LabeledPoint, LinearRegressionWithSGD
+		import numpy as np
+		from pyspark.mllib.regression import LabeledPoint
+
+		# Parse the point into a LabeledPoint made up of (label, set of features)
+
+		def parsePoint(line):
+			values = [float(x) for x in line.replace(',', '').split('')]
+			return LabeledPoint(values[0], values[1:])
+
+		# load the data into a resilient distributed data file (RDD)
+		data = sc.textFile('data/mllib/ridge-data/lpsa.data')
+
+		# transform the RDD into an RDD of LabeledPoint
+		parsedData = data.map(parsePoint)
+
+		# Build the model by training a LR on the parsedData
+		model = SGDRegressor.fit(parsedData features, parsedData labels)
+
+		# Evaluate 
+		valuesAndPreds = parsedData.map(lambda p: (p.label, model.predict(p.features)))
+
+		# compute the mean squared error (MSE) by mapping the label and prediction into the squared difference, and 
+		# reduce the distributed differences by summing them.
+		# Spark collects all the intermediate results via reduction
+		# this value is then divided by the total number of (label, prediction) tuples. 
+
+		MSE = valuesAndPreds.map(lambda (v,p): (v-p)**2).reduce(lambda x,y: x+y)) / valuesAndPreds.count()
+		print('Mean Squared Error = ' + str(MSE))
+
+41. What are Lasso, Ridge, and ElasticNet Regularizations?
+	
+	Linear Least Squares uses no regularization. Ridge regression uses L2 regularizations and Lasso uses L1. 
+	Both Lasso and Ridge produce coefficients for the learned model that are smaller than the version of regression with no regularization. However, Lasso tenfs to produce more zero coefficients, thus increasing the model sparsity and its compactness. Sometimes Ridge and Lasso are used together and those are the so-called ElasticNet models. 
+
+42. What is a Logistic Regression?
+	
+	A "Logistic Regression" is the problem of finding the minimum by SGD (or some other method) of a loss function
+	
+	Each prediction is made by using a logistic function f(h) = (1/1+e^-h), where h = wx for each new unseen observation x. 
+	Logistic Regressions are widely used to predict binary responses. 
+	
+	If (wx) > 0.5, then the outcome is positive, otherwise the outcome is negative. 
+
+	A variant of logistic regression is the multinomial one which predict K different outcomes, where one class is used as pivot and all the other ones are chosen in turn against the pivot. 
+
+	In other words, K - 1 models are run and the one with higher probability is picked as prediction. 	
+
+	Stochastic or mini-batch Gradient descent can be used for solving logistic regression problems. 
+
+	Code:
+		from pyspark.mllib.regression import LabeledPoint, LogisticRegressionWithLBFGS
+		import numpy as np
+
+		# parse the point into a LabeledPoint made up of (label, set of features)
+		def parsePoint(line):
+			values = [float(x) for x in line.replace(',', '').split('')]
+			return LabeledPoint(values[0], values[1:])
+
+		# load the data into a resilient distributed data file (RDD)
+		data = sc.textFile('data/mllib/ridge-data/lpsa.data')
+
+		# transform the RDD into an RDD of LabeledPoint
+		parsedData = data.map(parsePoint)
+
+		# Build the model by training a LR on the parsedData
+		model = SGDRegressor.fit(parsedData features, parsedData labels)
+
+		# Evaluate 
+		valuesAndPreds = parsedData.map(lambda p: (p.label, model.predict(p.features)))
+
+		# compute the mean squared error (MSE) by mapping the label and prediction into the squared difference, and 
+		# reduce the distributed differences by summing them.
+		# Spark collects all the intermediate results via reduction
+		# this value is then divided by the total number of (label, prediction) tuples. 
+
+		MSE = valuesAndPreds.map(lambda (v,p): (v-p)**2).reduce(lambda x,y: x+y)) / valuesAndPreds.count()
+		print('Mean Squared Error = ' + str(MSE))
+
+43. What is a stepwise regression?
+	In a stepwise selection, the choice of predictive variables is automatically carried out by exploring the space of features. 
+
+	Stepwise regression can reduce the risk of overfitting and can help to find a simple model with good performances but it can be very expensive. 
+
+	This is particularly true if the feature space is explored brute-force with no additional hints on how to pick the right set of features. 
+
+	There are three variants of stepwise regression:
+		
+		Forward selection: Starts with no features in the model, tests the addition of each feature using some error estimation and adds the variable only if it improves the model. The selection is repeated until no feature improves the model
+
+		Backward elimination: Starts with all candidate features, tests the deletion of each feature using some error estimation and then deletes the variable that improves the model the most after being deleted. This elimination is repeated until no feature deletion improves the model.
+
+		Bidirectional elimination: Combines the previous two steps together. 
+
+44. How to include nonlinear information into linear models
+
+	Linear methods are created to make forecasts as a linear combination of features. However, if the data is inherently not linearly separable, then it is still possible to use linear models in a few situations. 
+
+	The key idea is to approximate nonlinearities in the problem as features polynomials. This is called 'Basis Expansion'.
+
+	As an example, if you believe that one feature can have quadratic impact on the forecast, then you can add the square of the feature to the feature space. Picking the right basis expansion for the right set of features is an art which requires a lot of fine-tuning and experience. We will see another example of this technique when we discuss the SVM trick. 
+
+45. What is a Naive Bayes Classifier?
+	
+	A machine learning methodology which assigns class labels to each instance of real application data. The 'naive' attribute is related to the assumption that each feature provides a probabilistic contribution to the learned model, which is independent from features. 
+
+	For instance, a text article can be assigned to the category 'sports' because it contains the word 'first', independently from the fact that it contains the word 'base'. There words are considered separately but not in correlation. Despite their naive scheme and apparently simplified assumptions, naive Bayes classifiers have worked quite well in many difficult and practical solutions. 
+
+	Mathematically the problem can be formulated by considering an instance observation characterized by means of a suitable vector n of features X = X1 + ... + Xn. Where the goal is to assign the best class probability Ck (C1 + ... Cj) conditioned to the observation of X. This is statistically described as Prob(Ck | X). Bayes Theorem allows us to estimate this probability as Prob(Ck | X) = (Prob(Ck)*Prob(X | Ck))/Prob(X)
+
+	Again, the naivete comes from the assumption the model takes, that each feature is independent from the rest. 
+
+	In order to figure out Prob(X | Ck), we need to know if the data is discrete or continuous. If discrete, things like Bernoulli and Multinomial distributions are used. If continuous, Gaussian distributions are used. 
+
+46. What is a Bernoulli and Multivariate Naive Bayes?
+
+	In Bernoulli all features are simple binary variables describing the presence or absence of one particular attribute in the observed training set. 
+
+	Bernoulli is frequently used for text classification by explicitly modeling the presence or absence of a word term Wi in the text. 
+
+	A multivariate is a variant of Bernoulli, where Xi counts the number of times an event was observed in a particular instance. Multivariates are very popular for text classifications where the text is represented by an independent collection of words: the so called 'bag of words'. 
+
+47. What is a Gaussian?
+	
+	A family of mathematical functions which show a characteristic symmetric 'bell curve'. 
+
+	The gaussian is a very common continous probability distribution, frequently used in stats because of the Central Limit Theorem. This states that average random variables independently drawn from independent distributions are normally distributed. 
+
+	The simplest case of normal distribution is N(1,0).
+	In the classic example, 500 random numbers are sampled with N(0,1), and associated to buckets. The drawn values have the classical bell shape. The function has its peak at the mean and 'spread' increases by increasing the standard deviation.
+
+	Code:
+		import matplotlib.pyplot as plt
+		import numpy as np
+
+		mu, sigma = 0,1
+		s = np.random.normal(mu, sigma, 500)
+		count, bins, ignored = plt.hist(s, 50, normed=True)
+		plt.plot(bins, 1/(sigma*np.sqrt(2*np.pi))*np.exp(-(bins-mu)**2/(2*sigma**2)), linewidth=2, color='r')
+		plt.show()
+	
+48. What is Standard Scaling?
+	
+	If a dataset is described by a Gaussian, then it might be convenient to transform it by scaling its features to unit variance and/or removing the mean using column summary statistics on the samples in the training set. 
+
+	Code:
+		from pyspark.mllib.util import MLUtils
+		from pyspark.mllib.linalg import Vectors
+		from pyspark.mllib.feature import StandardScaler
+
+		data = MLUtils.loadLibSVMFile(sc, "data/mllib/sample_libsvm_data.txt")
+		label = data.map(lambda x: x.label)
+		features = data.map(lambda x: x.features)
+		scaler1 = StandardScaler().fit(features)
+		scaler2 = StandardScaler(withMean=True, withStd=True).fit(features)
+		scaler3 = StandardScalerModel(scaler2.std, scaler2.mean)
+		
+		# data1 is scaled to the unit variance
+		data1 = label.zip(scaler1.transform(features))
+
+		# data2 is scaled to the unit variance and has zero mean.
+		data2 = label.zip(scaler1.transform(features.map(lambda x: Vectors.dense(x.toArray()))))
+		
+		# features are mapped into dense vectors, for avoiding exceptions
+		# for transformation with zero mean on sparse vector.
+
+49. Why are statistical distributions important?
+	
+	Statistical distributions are important for modelling events and data. Distributions are characterized by functions such as the 'probability mass function (pmf)', which provides the probability that a discrete random variable is exactly equal to some value, and the 'cumulative distribution function (CDF)', which describes the probability of a real-valued random variable X to have a value less than or equal to x. 
+
+	In addition to the Normal dists, the following are often used in Data Science:
+
+		Bernoulli - Discrete. It takes value 1 with Probability P, and value 0, with probability function q = 1 - p.
+			A classic example is that of a single coin toss. Basically, 'if it's not one event, it's the other'.
+		
+		Binomial - Discrete. It describes the number of successes in a series of independent yes/no experiments all with the SAME probability of success.
+		
+		Poisson binomial - Describes the number of successes of independent Yes/No experiments with DIFFERENT probabilities of success. 
+
+		Poisson - Discrete. Describes the probability of events in a fixed interval of time/space with a known average rate arriving, independently of time since the last event.
+
+		Gaussian - A distribution on real. The Central Limit Theorem: every variable modelled as a sum of many variables with finite mean, variance is normal. 
+
+		Code: (Binomial)
+			import numpy as np
+			n, p = 10,.5 # number of trials, probability of each trial
+
+			s = np.random.binomial(n, p, 100)
+			print(s)
+
+50. Can you compare your data with some distribution? What is a qq-plot?
+	
+	If you want to investigate whether your data follow some distribution (normal, uniform), one useful way is to use a qq-plot, which can compare two probability distributions by plotting their quantiles against each other. If the 	distributions are similar, then the graph will show a line. THIS IS SOOOO COOL!
+
+	Code:
+		import numpy as np
+		import matplotlib.pyplot as plt
+		import scipy.stats as stats
+
+		measurements = np.random.normal(loc=40, scale=10, size=80)
+		stats.probplot(measurements, dist='norm', plot=matplotlib)
+		plt.show()
+
+51. What is a Gaussian Naive Bayes?
+	
+	If the data is continuous, it might be convenient to estimate the probability by using a Gaussian distribution. So if feature Xi is continuous, we compute the mean Summation(Xi -> Ck) and the variance of Xi in Ck, then we modelthe probabilities as Gaussians.
+
+	You can check whether the data is actually showing a Gaussian distribution by using tools such as qqplot
+
+52. What is another way to use Naive Bayes with continuous data?
+	
+	Discretizing the continuous features into buckets, and using Multinomial Naive Bayes for the discrete model. However, you need to be really fucking careful about the number of buckets you use. 
+
+53. What is the Nearest Neighbor Classification?
+	
+	A 'nearest neighbor' is a very simple form of classification where each instance is assigned to the objects which are closest to the instance. 
+
+	During the training phase, the space of features is partitioned in regions according to the position of the training instance. 
+
+	During the application phase, the distance with respect to the training instances is used to classify real data. 
+
+	There are many choices that can be made/parameters that can be changed. For instance, we can consider the closest object, or we can consider up to K objects and let them vote to pick the winning class. This is the so-called K-NN classifier.
+
+	Also, we might define different types of vectorial distances (what kind of distance are you even measuring bro?) 
+
+	***Given two vectors P = (pi, ..., pn) and Q = (qi, ..., qn), there are distances as follows:
+
+		Euclidean - The Euclidean distance represents the intuitive notion of distance of two points in space (the square of x^2 distance + y^2 distance, or the 'magnitude').
+
+		Manhattan - Intuitively maps al the points into a squared grid (similar to the map of manhattan) and the connections can only happen either vertically or horizontally.
+
+		Hamming - Number of positions where the single vector components are different. 
+
+		Jaccard - Represents the similarity between two sets
+
+	Implementing the exact nearest neighbor can be very computationally expensive, therefore many approximate variants have been proposed, which are generally based on the idea of sampling the feature space. 
+
+	Code (for Knn where K=1 - Things can get way more complicated, up to KD-Trees):
+		import numpy as np
+
+		def dist(p0, p1):
+			return np.sum((p0-p1)**2) # Euclidean distance
+
+		def knn(training, trainingLabels, newPoint):
+			dists = np.array([dist(t, newPoint) for t in training])
+			nearest = dists.argmin()
+			return trainingLabels[nearest]
+
+54. What are Support Vector Machines (SVM)?	
+	
+	Support Vector Machines aim to identify a hyperplane in a high dimensional space of features. Intuitively, the best hyperplane is the one having the largest distance to the nearest data point observed in any training data. 
+
+	In fact, this hyperplane provides the best separation among the training data. 
+
+	Basically, SVM finds in the hyperplane of the plotted features the line that best and most equally separates the data. 
+
+	Code:
+		from pyspark.mllib.classification import SVMWithSGD, SVMModel
+		from pyspark.mllib.regression import LabeledPoint
+
+		# Load and parse the data into LabeledPoint
+		def parsePoint(line):
+			values = [float(x) for x in line.split(' ')]
+			return LabeledPoint(values[0], values[1:])
+		
+		data = sc.textFile("data/mllib/sample_svm_data.txt")
+		parsedData = data.map(parsePoint)
+		
+		# Build the model for SVM with Stocastic Gradient Descent
+		model = SVMWithSGD.train(parsedData, iterations=100)
+		
+		# Evaluating the model on training data
+		labelsAndPreds = parsedData.map(lambda p: (p.label, model.predict(p.features)))
+		
+		# Compute the accuracy
+		trainErr = labelsAndPreds.filter(lambda (v, p): v != p).count() / float(parsedData.count())
+		print("Training Error = " + str(trainErr))
+
+55. What are SVM Kernel Tricks?
+	
+	If a linear separation is not enough, then it is still possible to use SVM ith simple tricks. For example, if the original data consists of 3-dimensional vectors [x,y,z], then we could compute a new 9-dimensional feature vector [x,y,z,x^2,y^2,z^2,xy,xz,yz]. 
+
+	The intution here is that the Kernel methods 'remember' the i-th training example (Xi,y) and combine it with another training example.
+
+	In certain situations an additional structure is added, and the kernel is a special function which maps the input space into another input space, where two features x,y are provided from the original input space. In other words, a kernel function maps a non-linear boundary in the problem space to a linear boundary in a higher dimensional space.
+
+	Examples of kernels used in machine learning:
+
+		K(x,y) = (1 + xy)^S : Polynomial for some degrees S
+
+		K(x,y) = tanh(A(kxy - h)) : Sigmoid for some parameters k,h
+
+		K(x,y) = e^(-(x-y)^2/2A^2) : Radial basis for some parameters A
+
+56. What is K-Means Clustering?
+	
+	K-Means is a form of flat clustering where the goal is to partition space into a set of groups without creating relations among them. In the next volume, we'll see a form of hierarchical clustering where the groups are organized in a hierarchical tree.
+
+	K-Means is a form of unsupervised learning, where the actual data is grouped into K different clusters.
+
+	K-Means partitions the N  observations into K sets in such a way that the within-cluster error expressed as a sum of squares is minimized.
+
+	An approximate solution to the problem is computed iteratively. The algorithm starts by randomly picking K points in the centroids. Then, alternatively two steps are repeated until either a convergence or a stopping criteria is met. 
+
+		First, each observation is assigned to the group, the centroid of which has the least within-cluster sum of squares from the observation.
+
+		Then, the mean for each group is updated by considering the observations laying within the group. The algorithm has converged when the assignments no longer change. 
+
+		Since both steps optimize the infra-cluster distance and only a finite number of partitions exists, the algorithm must converge to a (local) optimum
+
+	K-Means++ is a variant where the initial K Clusters are spread out: The first cluster center is chosen uniformly at random from the application data points, after which each successive cluster center is chosen from the remaining data points, with a probability that is proportional to its squared distance from the closest existing cluster center point. 
+
