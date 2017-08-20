@@ -34,6 +34,30 @@ def comp(lst):
 		print(val)
 	for x in range(10): # O(10)
 		print('hello world')
-comp(lst)
+
 # O(1) + O(n/2) + O(10) = O(n/2 + 11) = O(n)
+
+def matcher(lst, match):
+	for item in lst:
+		if item == match:
+			return True
+	return False
+#matcher(lst, 1) is O(1) --- Best case
+#matcher(lst, 11) O(n) --- Worst case
+
+# Space Complexity
+def create_list(n):
+	new_list = []
+	for num in range(n):
+		new_list.append('new')
+	return new_list
+# size of the new_list object size is relative to n
+# O(n) space complexity
+
+def printer(n):
+	for x in range(n):
+		print('hello world')
+# O(n) time complexity
+# O(1) = space complexity, because only 'hello world' is being printer every time
+
 
