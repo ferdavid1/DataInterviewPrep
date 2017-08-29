@@ -1,0 +1,34 @@
+1. Why is Cross Validation important?
+
+	In ML it is important to asses how a model learned from training data can be generalized on a new unseen data set. In particular a problem of overfitting is observed when a model make good predictions on the training data but has poor performance on unknown data. 
+
+	Cross-val is used a lot for reducing the overfitting risk. It splits the training data into two parts: One is the proper training set, while the other is the validation set which is used to check overfitting and find the best partition according to some evaluation metric. There are three commonly used options:
+		1. K-fold cross-val: Data is divided into a train and a validation set for k-times (called folds) and the minimizing combination is then selected. 
+		2. Leave one out validation: very similar to k-fold but the folds contain a single point
+		3. Stratified k-fold cross-val: the folds are selected so that the mean is approximately the same in all the folds
+	Code:
+		import numpy as np
+		from sklearn import cross_validation
+		from sklearn import datasets
+		from sklearn import svm
+		diabets = datasets.load_diabetes()
+		X_train, X_test, y_train, y_test = cross_validation.train_test_split(diabets.data, diabets.target, test_size=0.2, random_state=0)
+		print(X_train.shape, y_train.shape)
+		print(X_test.shape, y_test.shape)
+		clf = svm.SVC(kernel='linear', C=1)
+		scores = cross_validation.cross_val_score(clf, diabets.data, diabets.target, cv=4) # 4-folds
+		print(scores)
+		print("Mean: {}. \nScore: {}".format(scores.mean(), scores.std()))		from sklearn import cross_validation
+
+2. Why is Grid Search important?
+	
+	In ML it is important to asses which is the best configuration of hyperparamters for a learning algorithm. As usual, the goal is to optimize some well-defined evaluation metrics. Let us dig into those aspects in more detail. First lets clarify that learning algorithms learn parameters in order to create models based on input data. Second let us clarify that hyperparameters are then selected to ensure that a given model does not overfit its training data.
+
+	Grid search is an exhaustive search procedure that explores a space of manually defined hyperparameters by testing all possible configurations and selecting the most effective one. 
+
+	The code below runs a cross-val on a KNN classifier with 10 folds. The eval metric is accuracy. Then it performs a grid search on a parameter space defined in terms of number of neighbors to be considered(from 1 to 10), in terms of weights (uniform or distance-based) and in terms of Power parameter for the Minkowski metric (when p=1, this is equivalent to the manhattan distance (l1), or a euclidean distance (l2) for p=2).
+
+	The whole grid consists of a space of 10(neighbors) * 2(weights) * 2(distances) points which are exhaustively searched by the algorithm via GridSearchCV. The best configuration is then returned.
+
+	Code:
+	
