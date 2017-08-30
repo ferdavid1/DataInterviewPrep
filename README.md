@@ -7,4 +7,4 @@
 - The Data Science Interview (Volumes 1 and 2) - About 100 total really specific interview questions
 - How would you move Mt. Fuji? (a book on the puzzle questions often found in data and software interviews)
 - 120 Data Science Questions
-
+- Reinforcement Learning, by Sutton - The RL Bible.
