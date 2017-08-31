@@ -31,4 +31,34 @@
 	The whole grid consists of a space of 10(neighbors) * 2(weights) * 2(distances) points which are exhaustively searched by the algorithm via GridSearchCV. The best configuration is then returned.
 
 	Code:
+		
+		from sklearn.cross_validation import cross_val_score
+		from sklearn.neighbors import KNeighborsClassifier
+		from sklearn.grid_search import GridSearchCV
+		from sklearn import datasets
+		import numpy as np
+
+		# load toy dataset
+		boston = datasets.load_boston()
+
+		X, y = boston.data, boston.target
+		yint = y[:].astype(int)
+
+		# grid = 20 x 2 x 3
+		classifier = KNeighborsClassifier(n_neighbors=5, weights='uniform', metric='minkowski', p=2)
+
+		grid = {'n_neighbors:' range(1,11), 'weights': ['uniform', 'distance'], 'p': [1,2]}
+
+		print('baseline: {}'.format(np.mean(cross_val_score(classifier, X, yint, cv=10, scoring='accuracy', n_jobs=1))) # 10 fold accuracy
+
+		search = GridSearchCV(estimator=classifier, param_grid=grid, scoring='accuracy', n_jobs=1m refit=True, cv=10)
+
+		search.fit(X, yint) # grid search across paramters for classifier
+
+		print("Best Parametes: {}".format(search.best_params_))
+		print("Accuracy: {}".format(best_score_))
+
+4. How do we deal with categorical features? And what is one-hot encoding?
+
 	
+
