@@ -1,0 +1,22 @@
+
+A queue is an ordered collection of items where the addition of new items happens at one end, called the 'rear', and the removal of existing items occurs at the other end, commonly referred to as the 'front'
+
+As an element enters the queue it starts at the rear and makes its way toward the front, waiting until that time when it is the next element to be removed.
+
+The most recently added item in the queue must wait at the end of the collection
+
+This ordering principle is called FIFO: first-in, first-out (first come first served)
+
+The simplest example of a queue is the typical line that we all participate in from time to time
+
+We wait in a line for a movie, etc
+
+The first person  in that line is also the first person to get served.
+
+Enqueue:
+	
+	Describes when we add a new item to the rear of the queue
+
+Dequeue:
+	Describes removing the front item from the queue
+

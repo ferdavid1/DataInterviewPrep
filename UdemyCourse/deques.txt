@@ -1,0 +1,12 @@
+
+A deque, also known as a double-ended queue, is an ordered collection of items similar to the queue
+
+It has two ends, a front and rear - and the items remain positioned in the collection.
+
+What makes a deque different is the unrestrictive nature of adding and removing items.
+
+New items can be added at either the front or the rear.
+
+Even though the deque can assume a lot of the characteristics of stacks and queues, it doesn't require LIFO or FIFO orderings
+
+Basically, we can add or remove items from either the front or the back.
