@@ -1,0 +1,61 @@
+
+Singly Linked list Overview
+Adding elements to list
+Removing elements from list
+
+A singly linked list, in its simplest form, is a collection
+of nodes that collectively form a linear sequence
+
+Each node stores a reference to an object that is an element of the sequence, as well as a reference to the next node of the list.
+
+	Basically, two parts to a node: pointer to an object and pointer to the next node
+
+The list instance maintains a member named 'head' that identifies the first node of the list
+
+In some applications the list maintains a member named 'tail' that identifies the last node of the list
+
+We identify the tail as the node having None as its next reference (second pointer)
+
+This process is commonly known as 'traversing' the linked list
+
+Because the next reference of a node can be viewed as a 'link' or 'pointer' to another node, the process of traversing a list is also known as 'link hopping' or 'pointer hopping'
+
+Each node is represented as a unique object, with that instance storing a reference to its element and a reference to the next node (or None in the case of the 'tail')
+
+An important property of a linked list is that it does not have a predetermined nor fixed size
+
+It uses space proportionally to its current number of elements
+
+To insert a new element at the head of the list:
+	
+	We create a new node
+
+	Set its element to the new element
+
+	Set its next link to refer to the current head
+
+	Set the lists head to point to the new node
+
+A.) before insertion at the head
+	element, pointer -> element, pointer -> None
+B.) after creation of a new node
+	element, pointer -> element, pointer -> element, pointer -> None
+
+We can easily insert an element at the tail of the list, provided we keep a reference to the tail node
+
+	Create a new node
+
+	Assign its next reference to None
+
+	Set the reference of the current tail to point to this new node
+
+	Then update the tail reference itself to this new node
+
+Removing an element from the head of a singly linked list is essentially the reverse operation of inserting a new element at the head
+
+We cannot easily delete the last node of a singly linked list.
+	
+	Even if we maintain the tail reference directly to last node of the list, we must be able to access the node before last in order to remove the last node
+
+	If we want to support an operation like this efficiently, we will need to make our list doubly linked
+

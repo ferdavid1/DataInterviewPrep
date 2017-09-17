@@ -1,0 +1,32 @@
+
+In a doubly linked list, we define a linked list in which each node keeps an explicit reference to the node before it and a reference to the node after it!
+
+These lists allow a greater variety of O(1) time update operations, including insertions and deletions
+
+We continue to use the term 'next' for the refernece to the node that follows another
+
+We have a new term 'prev' for the reference to the node that precedes it. 
+
+Sentinel Nodes
+
+	We add special nodes at both ends of the list
+
+	a 'header' node at the beginning of the list
+
+	a 'trailer' node at the end of the list
+
+	These 'dummy' nodes are known as sentinels (or guards)
+
+Insertion:
+	
+	Every insertion into our doubly linked list representation will take place between a pair of existing nodes
+
+	When a new element is inserted at the front of the squence, we will simply add the new node between the header and the node that is currently after the header. 
+
+Deletion:
+
+	The two neighbors of the node to be deleted become linked directly to each other. 
+
+	As a result, that node will no longer be considered part of the list and it can be reclaimed by the system for memory
+
+	Because of sentinels, the same implementation can be used when deleting the first or the last element of sequence. 
