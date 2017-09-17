@@ -17,7 +17,7 @@ def isCycle(firstnode):
 	# this would be the case if you know that the list contains 3 elements only
 	# return firstnode.nextnode.nextnode.nextnode == firstnode
 	curr_node = firstnode
-	while curr_node.nextnode is not None:
+	while curr_node.nextnode: # while is not None
 		curr_node = curr_node.nextnode
 		if curr_node == firstnode:
 			return True
