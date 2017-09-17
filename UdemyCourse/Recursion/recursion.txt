@@ -1,0 +1,27 @@
+
+There are two main instances of recursion
+
+The first is when recursion is used as a technique in which a function makes one or more calls to itself. 
+
+The second is when a data structure uses smaller instances of the exact same type of data structure it represents itself.
+
+Recursion provides a powerful alternative for performing repetitions of tasks in which a loop is not ideal.
+
+Most modern programming languages support recursion
+
+Recursion serves a great tool for building out particular data structures. 
+
+We will demonstrate recursion through the factorial function
+
+The factorial function is denoted with an exclamation point and is defined as the product of the integers from 1 to N
+
+n! = n * (n-1) * (n-2) ...
+	if n=0, then n! = 1
+
+So, how can we state this in a recursive manner?
+
+Recursive Equation:
+	n! = n * (n-1)!
+
+if n=0, then n! = 1
+	This means that the base case occurs once n=0, and the 'recursive' cases are defined in the equation above
