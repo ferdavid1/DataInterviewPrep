@@ -8,5 +8,17 @@ You can assume the phrase will contain words found in the
 dictionary if it is completely splittable
 '''
 
-def word_split(phrase, list_of_words):
+def word_split(phrase, words, result=None):
+
+	# result = [] you can't do this, because it will overwrite every recursion!!!
+	if not result:
+		result = []
+
+	for word in words:
+		if phrase.startswith(word):
+			result.append(word)
+			return word_split(phrase[len(word):], words, result)
+	return result
+
+print(word_split('aycaramba', ['ay', 'caramba']))
 	
