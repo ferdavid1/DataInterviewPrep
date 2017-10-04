@@ -1,0 +1,60 @@
+
+The Data:
+
+	48x48 grayscale images
+	
+	Faces are centered, approx same size
+	
+	7 classes:
+		0 = Angry
+		1 = Disgust
+		2 = Fear
+		3 = Happy
+		4 = Sad
+		5 = Surprise
+		6 = Neutral
+
+	3 column CSV: label, pixels(space-separated), train/test
+
+The algorithm:
+
+	We've only learned binary classification so far (we have not explicitly derived the softmax function), so we will focus on classification for classes 0 and 1
+
+	if there are 4953 of class 0 and 547 of class 1, even if we just guessed class 0 every time it would still be a ~90% classification rate. 
+
+Data structuring plan:
+
+	48x48 means that for logistic regression and basic neural networks, we will use a 2304 (48x48) flat vector
+
+	With CNNs, the original data's matrix shape is retained
+
+Normalization:
+
+	Images have pixel intensities 0...255 (8 bit integers have 2^8=256 different possible values)
+
+	We want to normalize them from 0 --> 1
+
+	We could do this by z = (x-mean)/sdev
+
+	Reason: sigmoid/tanh are most active in -1 --> 1 territory
+
+Challenges:
+
+	Learning rate: 
+		
+		too high -> NaN
+		too low -> Slow convergence
+
+	Regularization:
+
+		too high --> just makes W small, ignores any real patterns
+		too low --> cost may still explode to NaN
+
+	# of Epochs:
+
+		stop too early -> steep slope, not at minimum error
+		Stop too late  -> no effect on error, just takes too long
+		
+
+
+	

@@ -1,0 +1,44 @@
+TFCheatsheet.txt
+import tensorflow as tf
+import numpy as np 
+import matplotlib.pyplot as plt
+
+Nclass = number of classifiers (len data)
+X = data 
+D = dimensions of input, usually 2 or 3
+M = number of hidden layers ( how deep, bro?)
+K = number of classes to classify into
+
+Y = np.array([0]*Nclass + [1]*Nclass + [2]*Nclass)
+N = len(Y)
+# turn Y into an indicator matrix for training
+T = np.zeros((N, K))
+for i in range(N):
+    T[i, Y[i]] = 1
+
+initialize weights = lambda shape: tf.Variable(tf.random_normal(shape, std))
+
+forward propagation:
+def forward(X, W1, b1, W2, b2):
+	return tf.sigmoid/tanh/relu(tf.matmul(X * W1) + b1)
+
+start placeholders:
+tfX = tf.placeholder(tf.float32, [None, D])
+tfY = tf.placeholder(tf.float32, [None, K])
+
+initialize weights
+W2 = initialize_weights([D, M])
+b2 = initialize_weights([M])
+W1 = initialize_weights([M, K])
+b1 = initialksdlkjldkj([K])
+
+forward initialization:
+pyX = forward(tfX, W1, b1, W2, b2)
+
+cost:
+cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pyX, tfY))
+
+train = tf.train.GradientDescentOptimizer(learning_rate).minimize(cost)
+predict = tf.argmax(pyX, on axis 1)
+
+initialize with the for loop for however many iterations you want

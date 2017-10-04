@@ -1,0 +1,21 @@
+ 
+Remember that there are a ton more samples from class 0 than from class 1?
+
+Suppose we have class 0 = 1000 vs class 1 = 100
+
+Method 0: Randomly choose 100 from class 0? then we would have 100 vs 100
+
+Method 1: Simply repeat class 2 10 times, now we have 1000 vs 1000
+
+Method 1 is better (less variance, more data)
+
+Other options to expand class 2:
+	
+	Add Gaussian noise
+
+	Add invariant transformations(shift left, right, rotate, etc)
+
+Precision and Recall 
+
+f1 -> precision and recall (harmonic mean of both)
+

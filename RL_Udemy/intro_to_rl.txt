@@ -1,0 +1,91 @@
+
+RL training has many references to biology and psych
+
+Agents are use to model animal behavior. 
+
+Objective is a goal. 
+
+Supervised objective: maximize accuracy or likelihood/minimize cost
+
+RL agents get feedback as they interact with the environment
+
+Feedback signals(rewards) are automatically given to the agent by the environment.
+
+	VS supervised learning: labels need to be made by humans (time-consuming and expensive)
+
+Phrasing objective in terms of goal allows us to solve a wide variety of proble,s
+
+Google's AlphaGo's Goal is to win Go
+
+Goal of a video game AI: win the game/get the highest score.
+
+What about animals and humans?
+
+Selfish gene theory (Dawkins)
+
+AlphaGo found unique ways of winningL unusual and unexpected by observers.
+
+Selfish gene theory says that everything we do is designed to serve out genes' desire to multiply (why do people want to be rich, etc)
+
+Richness has no physical relationship to genes, yet its a novel solution to the problem.
+
+Tic Tac Toe:
+
+	Number of possible states? each location on the board has 3 possible states: empty, X, or O. 
+
+	9 locations on the board
+
+	3^9 = ~19,000 states
+
+Agent: thing that senses its environment, thing we're trying to code intelligence/learning into
+
+Environment: Real world or simulated world that the agent lives in. 
+
+State: Different configurations of the environment that the agent can sense.
+
+Rewards: An agent not only tries to maximize its immediate reward (finding local gradient vectors (with velocity and direction)), but future rewards as well. 
+
+RL algorithms can find novel ways of accomplishing this.
+
+Not intuitive to humans, but RL can figure it out. 
+
+Maze problem:
+
+	Reasonable goal: solve the maze 
+
+	Reward: 1 if solved, 0 if not 
+
+	Possible solution: move randomly until solved. 
+
+	RL solution: 
+
+		Reward: -1 for every step taken
+
+			In order to maximize total reward, must minimize total # of steps
+
+			Note: reward is always a real number
+
+SAR triples:
+
+	(State, action, reward)
+
+Time is important in RL
+
+	Every game is a sequence of states, actions, rewards
+
+	Convention: Start in state S(t), take action A(t), receive a reward R(t+1)
+	S(t), A(t), S(t+1) = (s,a,s')
+
+Program the agent to be intelligent
+
+Agent interacts with its environment by being in a state, taking action based on that state, which brings it to a new state.
+
+Environment gives the agent a reward, can be +ve or -ve (but must be a number)
+
+Reward is received in the next state.
+
+ 
+
+
+
+

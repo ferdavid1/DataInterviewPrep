@@ -52,7 +52,7 @@ class BinaryHeap(object):
 	# then we can swap the item with its parent.
 	# do this forever until its in the proper place
 	def percUp(self, i):
-		while (i // 2) > 0:
+		while (i // 2) > 0: # // is integer division 
 			if self.lst[i] < self.lst[i//2]:
 				tmp = self.lst[i//2] # save parent
 				self.lst[i//2] = self.lst[i] # parent is curr
@@ -60,11 +60,40 @@ class BinaryHeap(object):
 			i = i//2
 
 	def insert(self, k):
-		
+		self.lst.append(k)
+		self.currentsize = self.currentsize + 1
+		self.percUp(self.currentsize) # percUp takes index
+	
 	def percDown(self, i):
-		pass
-	def isEmpty(self):
-		return self.lst == []
+		while (i * 2) <= self.currentsize: # // is integer division 
+			mc = self.minChild(i)
+			if self.lst[i] > self.lst[mc]:
+				tmp = self.lst[i] # save parent
+				self.lst[i] = self.lst[mc] # parent is curr
+				self.lst[mc] = tmp # curr = parent
+			i = mc
 
-	def size(self):
-		return len(self.lst)
+	def minChild(self, i):
+		if i*2 +1 > self.currentsize:
+			return i * 2
+		else:
+			if self.lst[i*2] < self.lst[i*2+1]:
+				return i*2
+			else:
+				return i*2 + 1
+
+	def delMin(self):
+        retval = self.lst[1]
+        self.lst[1] = self.lst[self.currentsize]
+        self.currentsize = self.currentsize - 1
+        self.lst.pop()
+        self.percDown(1)
+        return retval
+
+    def buildHeap(self,alist):
+        i = len(alist) // 2
+        self.currentsize = len(alist)
+        self.lst = [0] + alist[:]
+        while (i > 0):
+            self.percDown(i)
+            i = i - 1

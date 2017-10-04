@@ -1,0 +1,37 @@
+
+Ex: Go to a casino, choice between 3 slot machines
+
+Each (for now) gives reward of 0 or 1
+
+Win rate is unknown (could be 0.1 or 0.99)
+
+Goal: maximize your winnings
+
+Problem: can only discover best bandit by collecting data
+
+If you're psychic, you could just play the bandit with the highest win rate
+
+Balance explore(collecting data) + exploit (playing "best-so-far" machine)
+
+Traditional A/B testing:
+
+	Predetermine # of times you need to play/collect data in order to establish statistical significance
+
+	# of times needed is dependent on numerous things, like the difference between win rates of each bandit
+
+	But you don't know the win rates! (lil catch-22)
+
+	Even if you set N=1000, but after 500 trials, you discover 90% win rate vs 10% win rate
+
+	You still may not stop!
+
+	This is much different from human behavior
+
+		Suppose you're playing in a real casino, you get 2/3 on one bandit, 0/3 on the other
+
+		You have a strong urge to play the first bandit, despite the fact that their true win rates are likely not 67% and 0%, respectively
+
+		You know as a data scientist that 3 is a small sample size, but as a gambler you do not feel that way - sometimes your emotions can override that outsider's logic
+
+		So, a strategy better than A/B testing and Human Emotion-based decisions? We will learn it in this course
+
