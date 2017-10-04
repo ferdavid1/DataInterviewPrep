@@ -1,0 +1,6 @@
+Don't use Python tricks (mystring[::-1]) during the interview process.
+Fernando note: it actually could be good to mention these as a practical solution,
+just not submit those as the final solution. This might demonstrate practicality and knowledge of Python's
+innner workings. 
+
+Try solving problems on a whiteboard first.

@@ -1,0 +1,109 @@
+Intro to Neural Networks
+	train() - learn model params from the data (x, y)
+	predict() - make accurate prediction using the params learned during training (x, yhat)
+	Architecture
+		input layer, output layer, hidden layer
+		deep NNs have many hidden layers
+		every node in one layer is connected to every node in the next layer
+		signal: input->hidden->output
+		the output is aiming for a target
+		input node - where the input signal (neural receptor-like) is weighted
+	'logistic unit' is often called a neuron bc of similarities
+	a neural network is just layers of logistic regression units
+	the learning part of the NN is called "Backpropagation"
+	node action depends on action in node before it
+	weights get updated based on this propagated error
+	Bases
+		Linear Regression
+			y = Wx +b (wieght x input plus bias)
+			one-hot encoding/converting to numpy arrays
+			closed-form solution
+		Logistic Regression
+			y = sigma(Wx + b) [sigmoid function x Wx + b]
+			no closed-form solution
+	basic equation of a neuron/ binary logistic regression:
+		p(y=something | x) = sigma(w^T x)
+	basic equation of gradient descent:
+		w = w - n(delta)J
+	Not all classification has to be binary! Softmax (non-binary) vs Sigmoid
+	neural network - each input x weight + bias, pass it through a sigmoid
+	Taking a tanh (hyperbolic tangent) initialization function (or sigmoidal[RELU]) and removing all nonlinearities, you get Linear Regression
+	p(y|x) = softmax(V^Tf(W^Tx))
+
+	Creating cost functions to optimize weights - using gradient descent
+	Gradient descent in neural networks == Backpropagation
+	Backpropagation is recursive in nature
+		- can do backpropagation no matter how deep the nn is
+	Capital letter variables usually refer to matrices
+	lowercase usually refer to vectors
+	P_Y_given_x as variable names for probability distributions is kinda gross, so we can use yhat instead
+
+	W - Input to hidden weight matrix
+	b - hidden bias
+	V - hidden to output weight matrix
+	c - output bias 
+	M - size of hidden layer
+	K - size of output layer
+
+	Minimizing cost = minimizing the negative-log likelihood (maximiizing the log-likelihood) = cross entropy cost function
+	Softmax = cross entropy loss
+	Minimizing the cost = gradient descent
+	Maximizing the negative cost = gradient ascent
+	Gradient Descent/Ascent is the 'secret sauce' that makes up all NNs (RNN, LSTM, FFNN, CNN, Autoencoders)
+	Cost function:
+		J = -sum(Xn * ln a(Yn) + (1-Xn)ln(1-Yn))
+		this function has a global minimum. We start with random weights somewhere on the function parabola, and use gradient descent to get to the minimum in small steps.
+		to do this, we find the direction of descent by computing the gradient, deriv(J)/deriv(W)... derivative of J with respect to W
+		Weight = Weight - n(deriv(J)/deriv(W))
+		for gradient ascent, W = W + n(deriv(J)/deriv(W)) - and it is a negative parabola
+	softmax probability:
+		P(targets|inputs, weights) = pi pi Yk^n^t
+		take log likelihood (positive, for gradient ascent)
+		find the derivative with respect to certain weights(same as logistic regression)
+	errors backpropagate back to each node, and updates its weight
+	Choosing a nonlinear activation function
+		Sigmoid, Hyperboic tangent (tanh), Rectifier linear unit (RELU)
+		TanH is just a sigmoid that is scaled horizonally and vertically. Also goes from -1 -> 1 instead of 0 -> 1 like sigmoid
+		RELU is a very good default one to use if in doubt. It performs very well and is computationally efficient
+	Hyperparameter choosing:
+		there is no precise way to choose one
+		Cross validation
+			If the test error is gradually increasing, this is a sign of OVERFITTING!
+		Learning rates
+			start with something like .1, then increase or decrease by factors of 10 accordingly 
+			How do you know if learning rate too high/low?
+			Too high -> cost goes to infinity
+				NN will start multiplying NANs as if they were real
+			Too low -> cost decreases too slowly.
+			Learning rate that's too high will mess your results up, learning rate that's too low will only slow down computational time, with normal end results
+			Normalizing cost by training a NN in batches, diving cost function by N (number of batches)
+			Same thing with reuglarization, divide by number of parameters
+
+	Visualizing your tf neural net:
+		playground.tensorflow.org
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
