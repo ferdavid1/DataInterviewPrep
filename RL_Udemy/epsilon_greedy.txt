@@ -1,0 +1,32 @@
+Epsilon-Greedy
+
+Solution to the explore-exploit dilemma we'll use throughout the course
+
+Very simple
+
+Choose small number (epsilon) as probability of exploration
+
+	Typical values are 0.05, 0.10
+
+pseudocode:
+
+	p = random()
+	if p < eps:
+		pull random arm 
+		# explore (look for other options)
+	else:
+		pull current-best arm 
+		# exploit (use this option)
+
+	Eventually this allows us to discover the true best arm, since this allows us to update each arm's estimate
+
+In the long run, this allows us to explore each arm an infinite number of times
+
+Problem: we get to a point where we explore when we don't need to. 
+
+For epsilon=0.10, we'll continue to spend 10% of the time doing suboptimal things.
+
+Could do A/B test at some predetermined time, then set epsilon=0
+
+But we'll learn better ways to adapt.
+

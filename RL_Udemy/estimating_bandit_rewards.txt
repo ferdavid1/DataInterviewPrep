@@ -1,0 +1,15 @@
+
+Assuming bandit rewards are not just coin tosses, what's the best way to keep track of a reward?
+
+General method is the mean
+
+Works for 1/0 too
+
+P(k=1) = (#of1's)/(#of1's + #of0's) = (#of1's)/N
+
+Calculating the new mean from the old mean:
+	
+	Mean = X
+	X @time n = (1-(1/N))Xn-1 + (1/N)Xn
+
+	 
