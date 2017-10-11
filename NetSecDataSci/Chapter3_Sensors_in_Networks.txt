@@ -43,4 +43,20 @@ Packet and Frame Formats
 
 	Limiting the Data captured from each packet:
 
-		
+		An alternative to capturing the complete packet is to capture a limited subset of the payload, controlled in tcpdump by the snaplen (-s) argument. Snaplen constrains packets to the frame size specified in the argument.
+
+		If you specify a frame size of at least 68 bytes, you will record the TCP or UDP headers. 
+
+	Filtering Specific Types of Packets
+
+	An alternative to filtering at the switch is to filter after collecting the traffic at the spanning port. With tcpdump and other tools, this can be easily done using BPF. BPF allows an operator to specify arbitrarily complex filters, and consequently the possibilities are fairly extensive. 
+
+	address_filtering_bpf.sh
+
+NetFlow:
+
+	NetFlow is a traffic summarization standard developed by Cisco Systems and originally used for network services billing. 
+
+	While not intended for security, NetFlow is fantastically useful for that purpose becasue it provides a compact summary of the network traffic sessions that can be rapidly accessed and contains the highest-value information that you can keep in a relatively compact format. 
+
+Data Collection via IDS
