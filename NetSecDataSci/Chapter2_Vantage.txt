@@ -1,0 +1,85 @@
+
+The basics of Network Layering 
+
+Computer networks are designed in layers
+
+A layer is an abstraction of a set of network functionality intended to hide the mechanics and finer implementation details. 
+
+Internet Protocol (IP) resides on layer 3 in the OSI model; an IP implementation can run identically on different layer 2 protocols such as Ethernet or FDDI
+
+OSI uses the following layers:
+
+	1. The physical layer is composed of the mechanical components used to connect the network togther - the wires, cables, radio waves, and other mechanisms used to transfer data from one location to the next. 
+
+	2. The data link layer is concerned with managing information that is transferred across the physical layer. Data link protocols, such as Ethernet, ensure that asynchronous communications are relayed correctly. In the IP mode, the data link and physical layers are grouped together as the link layer (layer 1)
+
+	3. The network layer is concerned with the routing of traffic from one data link to another. In the IP model, the network layer directly corresponds to layer 2, the internet layer. 
+
+	4. The transport layer is concerned with managing information that is transferred across the network layer. It has similar concerns to the data link layer, such as flow control and reliable data transmission, albeit at a different scale. In the IP mode, the transport layer is layer 3. 
+
+	5. The session layer is concerned with
+	the establishment and maintenance of
+	a session, and is focused on issues
+	such as authentication. The most common example of a session layer
+	protocol today is SSL, the encryption
+	and authentication layer used by
+	HTTP, SMTP, and many other services
+	to secure communications.
+	
+	6. The presentation layer encodes
+	information for display at the
+	application layer. A common example
+	of a presentation layer is MIME, the
+	message encoding protocol used in
+	email.
+	
+	7. The application layer is the service,
+	such as HTTP, DNS, or SSH. OSI
+	layers 5 through 7 correspond roughly
+	to the application layer (layer 4) of the IP model. 
+
+MAC addresses
+
+	A media access control (MAC) address is what the majority of the layer 2 protocols, including Ethernet, FDDI, Token Ring, 802.11, Bluetooth, and ATM, use to identify a host. MAC addresses are sometimes called "hardware address", as they are usually assigned as fixed values by hardware manufacturers. 
+
+	48-bit int (MAC-48)
+	EX:
+
+		1:23:45:67:89:AB
+
+It is supppper easy to spoof MAC addresses. Most network configuration tools will provide you with some option for manually setting the MAC address, and as long as it's well formed, you should be able to set it to anything you like without a problem. 
+
+
+IPv4 Format and Addresses 
+
+	An IPv4 address is a 32-bit integer value assigned to every routable host, with exceptions made for reserved dynamic address spaces. 
+
+	EX:
+
+		128.1.11.3 -- four integers between 0 and 255 separated by periods
+
+IPv6 Format and Addresses
+
+	An IPv6 address is a 128-bit integer, solving the IPv4 address exhaustion problem by increasing the space by a factor of about 4 billion
+
+	Ex:
+
+		00AA:2134:0000:0000:A13F:2099:0ABE
+
+		all-zero sections often reduced to double colons, like 00AA:2134:::A13F:2099:0ABE
+
+DHCP
+
+	On DHCP networks - which are, these days, most networks - IP addresses are assigned dynamically from a pool of open addresses. Users lease an address for some interval, returning it to the pool after use. 
+
+VPN 
+
+	In a virtual private network (VPN), some process wraps traffic in one protocol within the envelope of another protocol. 
+
+	Examples of these include classic VPN protocols such as Generic Routing Encapsulation, ad-hoc VPN tools such as Secure Shell (SSH), etc.
+
+	VPNs introduce two significant challenges. 
+
+		First, the encryption of the data in transit obviates deep packet inspection and any technique that requires examining or interpreting the payload. 
+
+		The other challenge is the identity problem - outside the VPN, the observer sees a single, d

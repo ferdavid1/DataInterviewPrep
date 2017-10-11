@@ -1,0 +1,11 @@
+
+Networks
+
+	Monitoring them, studying them, using the results of those studies to improve them
+
+MRIs are the most uncommonly thought of, and most easily hacked, web server-using machines. 
+
+Ways of defending:
+
+	Developing rate limiters, intrusion detection systems (IDSs), or policies that limit the impact of an attacker on a network. 
+
