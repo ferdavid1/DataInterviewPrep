@@ -82,4 +82,8 @@ VPN
 
 		First, the encryption of the data in transit obviates deep packet inspection and any technique that requires examining or interpreting the payload. 
 
-		The other challenge is the identity problem - outside the VPN, the observer sees a single, d
+		The other challenge is the identity problem - outside the VPN, the observer sees a single, long-lived flow between the client and the VPN. 
+
+	At the VPN endpoint, the client will engage in multiple interactions with clients within the network, which are returned to the VPN access point and delivered to the client. The end result is a maze of IP address relationships across the VPN barrier. 
+
+	
