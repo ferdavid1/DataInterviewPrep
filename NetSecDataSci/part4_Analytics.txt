@@ -9,12 +9,5 @@ Attacker Behavior
 
 		Nmap usage:
 
-			nmap scanme.nmap.org
-			nmap 74.207.244.221
-			nmap 10.1.1.0/24
-				this means all 256 addresses
-				beginning with 10.1.1
-			nmap 10.1.50-52.1
-				scans 10.1.50.1, 10.1.51.1 and 10.1.52.1
-			nmap 10.1.50,51,52,57,59.1
+			nmap.txt
 			

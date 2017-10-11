@@ -16,3 +16,65 @@ Ping Scan
 	Technique for determining whether the specified computers are up and running. Nmap performs ping scan by default before port scan to avoid wasting time on hosts that aren't even connected. To instruct nmap to "only" perform ping scan:
 
 		nmap -sP 10.1.1.1/8
+
+	-Pn might be useful when the machine is heavily firewalled. 
+
+Port Scan
+
+	There are three main states a port can be in:
+
+		Open - there is a program listening and responding to requests on this port 
+
+		Closed - the host replies with an "error: no program listening on this port" reply to requests on this port. 
+
+		Filtered - the host doesn't reply at all. This can be due to restrictive firewall rules, which "drop" a packet without sending a reply. 
+
+	3 additional states used when nmap is uncertain:
+
+		open|closed (unfiltered) - the port is either
+
+		closed|filtered - either
+
+		open|filtered - either
+
+	To specify custom port numbers, use -p:
+
+		nmap -p -25,135-137 10.1.1.1
+
+PSD - Port Scan detection
+	
+	--psd-weight-threshold *threshold*
+
+	--psd-delay-threshold *delay*
+
+	--psd-lo-ports-weight *weight*
+
+	How it works:
+
+		if requests from a single IP have gained a value more than *threshold* in *delay* seconds, then the IP is classified as a port scanner. 
+
+
+Avoiding detection 
+
+	One of the easiest ways to avoid PSD is to scan slowly
+
+	nmap --scan-delay 3.1. 192.168.56.1
+
+	Limiting Scan Speed
+
+		To send a packet at most every 3.333 seconds:
+			
+			nmap --max-rate 0.3 192.168.56.1
+
+		To send a packet every 3.1 secs:
+
+			nmap --scan-delay 3.1 192.168.56.1
+
+Specifying targest input from a file 
+
+	some_addresses.txt:
+		10.1.1.1 10.1.1.2 10.1.1-10.3
+		10.3.1.3 10.3.1.50 10.3.2.55
+		10.1.1.100
+
+	nmap -iL some_addresses.txt
