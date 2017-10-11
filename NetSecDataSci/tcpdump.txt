@@ -1,0 +1,38 @@
+
+Capture packets on eth0in ASCII and hex and write to file:
+
+	tcpdump -i eth0 -XX -w out.pcap
+
+Capture HTTP traffic to 2.2.2.2
+
+	tcpdump -i eth0 port 80 dst 2.2.2.2
+
+Show connections to a specific IP
+
+	tcpdump -i eth0 -tttt dst 192.168.1.22 and not net 192.168.1.0/24
+
+Print all ping responses
+
+	tcdump -i eth0 'icmp[icmptype] == icmp-echoreply'
+
+Capture 50 DNS packages and print timestamp
+
+	tcpdump -i eth0 -c 50 -tttt 'udp and port 53'
+
+
+Capture tcp traffic on port 22-23:
+
+	tcpdump -nvvX -s0 -i eth0 tcp portrange 22-23
+
+Capture traffic to specific IP, excluding specific subnet
+
+	tcpdump -I eth0 -tttt dst <ip> and not net 1.1.1.0/24
+
+Capture traffic b/w local and 192.1
+
+	tcpdump net 192.1.1
+
+Capture traffic for <sec> seconds 
+
+	dumcap -I eth0 -a duration:<secs> -w file <file.pcap>
+

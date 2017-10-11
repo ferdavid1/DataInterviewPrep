@@ -77,4 +77,43 @@ Specifying targest input from a file
 		10.3.1.3 10.3.1.50 10.3.2.55
 		10.1.1.100
 
+	addresses have to be separated with whitespace
+
 	nmap -iL some_addresses.txt
+
+Specify targets to exclude from scan
+
+	nmap 10.1.1.1-10 --exclude 10.1.1.5,7
+
+Spoofing:
+
+	A spoofing attack is a situation in which one person or program successfully masquerades as another by falsifying data, thereby gaining an illegitimate advantage. 
+
+	Basically, allows you to pretend you have a different IP/MAC/port than you have. 
+
+	To spoof source IP:
+
+		nmap -S 192.168.56.35 -e vboxnet0 192.168.56.11
+
+	To spoof source MAC address:
+
+		nmap --spoof-mac 192.168.56.11
+
+	To spoof source port:
+
+		nmap --source-port 22 192.168.56.11
+
+Speeding up the scan:
+
+	nmap -n 192.168.56.0/24
+
+File output:
+
+	To file:
+
+		-oN *filename*
+
+	To xml:
+
+		-oX *filename*
+
