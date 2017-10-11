@@ -1,0 +1,46 @@
+
+Yet another method to solve explore-exploit
+
+Idea: confidence bounds
+
+Intuitively, we know that a sample mean from 10 samples is less accurate than a sample mean from 1000 samples
+
+Chernoff-Hoeffding bound:
+	Note: Xbar is sample mean, and Mu is population mean
+	
+	P{|Xbar - Mu|} <= 2exp{-2epsilon^2 * N}
+
+	This may seem complex, but it leads to a simple algo:
+
+		X(ucb-j) = Xbar(j) + root(2*(lnN/j))
+
+		N = number of times you've played in total, N(j) = number of times you played bandit J
+
+UCB1:
+
+	How do we use this formula? Same as optimistic initial values method
+
+	Just be greedy, but with respect to X(ucb-j)
+
+	Key: ratio between ln(N) and N(j)
+
+	If only N(j) is small, then upper bound is high
+
+	If N(j) is large, upper bound is small
+
+	ln(N) grows more slowly than N, so eventually all upper bounds will shrink
+
+	By then we've collected lots of data, so it's ok
+
+	So we converge to purely greedy strategy
+
+Pseudocode:
+
+	simply change what's in the argmax
+
+	for n=1..N:
+		j = argmax[j']{bandit[j'].mean + sqrt(2*ln(n) / n_j')}
+		pull bandit j 
+		update bandit j
+
+	What if N(j) = 0? Add a small number to the denominator

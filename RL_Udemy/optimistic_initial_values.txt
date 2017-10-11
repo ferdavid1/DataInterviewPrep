@@ -1,0 +1,42 @@
+
+Another simple way of solving the eplore-explot dilemma
+
+Suppose we know the true mean of each bandit is <<10
+
+Pick a high ceiling as the initial mean estimate
+
+Before: Mean @time 0 = 0
+
+Now: Mean @time 0 = 10
+
+Initial sample mean is "too good to be true"
+
+All collected data will cause it to go down
+
+If the true mean is 1, the sample mean will stil approach 1 as we collect more samples.
+
+All means will eventuallu settle into their true values (exploitation)
+
+Helps exploration as well
+
+If you haven't explored a bandit, its mean will remain high, causing you to explore it more
+
+In the main loop: greedy strategy only
+
+But using optimistic means. 
+
+Only 2 main code changes:	
+
+	In comparing_epsilon_values.py:
+
+		1. 
+			class Bandit:
+				def __init__(self, m, upper_limit):
+					self.m = m
+					self.mean = upper_limit
+					self.N = 1
+		2. 
+			for i in range(N):
+				j = np.argmax([b.mean for b in bandits])
+				x = bandits[j].pull()
+				bandits[j].update(x)
