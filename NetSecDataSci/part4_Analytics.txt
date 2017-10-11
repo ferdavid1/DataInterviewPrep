@@ -1,0 +1,16 @@
+
+Attacker Behavior
+
+	Reconnaissance:
+
+		Scouting out the target. 
+
+		Googling, social engineering, nmap, etc
+
+		Nmap usage:
+
+			nmap scanme.nmap.org
+			nmap 74.207.244.221
+			nmap 10.1.1.0/24
+				this means all 256 addresses
+				beginning with 10.1.1

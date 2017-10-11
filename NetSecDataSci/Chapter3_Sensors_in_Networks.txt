@@ -60,3 +60,58 @@ NetFlow:
 	While not intended for security, NetFlow is fantastically useful for that purpose becasue it provides a compact summary of the network traffic sessions that can be rapidly accessed and contains the highest-value information that you can keep in a relatively compact format. 
 
 Data Collection via IDS
+
+	Intrusion Detection systems (IDSs) are network-vantage event-action sensors that operate by collecting data off of the interface and running one or more tests on the data to generate alerts. IDSs are not really built as sensors, instead being part of a family of expert systems generally called binary classifiers. 
+
+	A binary classifier, as the name implies, classifies info. 
+
+	Categories: data is normal and requires no action, or is characteristic of an attack
+
+	If attack, the system reacts as specified; IDS operates as an event sensor, generating an event.
+
+	Intrusion Prevention Systems (IPSs),the IDSs more aggressive cousins, block traffic. 
+
+	Problems with classification:
+
+		Moral:
+
+			Attacks can be indistinguishable from innocuous, or even permitted, user activity. For example, a DDoS attack and a flash crowd can look very similar until some time has passed. 
+
+		Statistical:
+
+			IDSs are often configured to make hundreds or millions of tests a day - under those conditions, even low false positive rates can result in far more false positives in a day than true positives in a month. 
+
+	Types of IDSs:
+
+		Network-based (NIDSs):
+			
+			Any IDS that begins with pcap data. 
+
+			Software:
+				Snort - the most common
+					systemctl start snort@enp3s0/anything in ip -a
+				Bro, from berkeley	
+
+		Host-based (HIDSs)
+
+		Signature-based:
+
+			Calibrated to look for specific weird behaviors such as malware signatures or unusual login attempts. 
+
+			Often have high false negative rates (they miss a lot)
+		
+		Anomaly-based:
+
+			Trained on normal behavior and then look for anything that steps outside the norm
+
+			Often have high false positive rates
+
+	Improving IDS performance
+
+		Improve the classifier
+
+			Best done usually by reducing the scope of the traffic the IDS examines
+			 
+		Improve the sensitivity and specificity
+
+	
