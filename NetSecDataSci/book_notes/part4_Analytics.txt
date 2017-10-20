@@ -11,3 +11,41 @@ Attacker Behavior
 
 			nmap.txt
 			
+	Subversion:
+
+		The attacker launches an exploit against a target and takes control. This may be done via a remote exploit, sending a Trojan file, or even password cracking. 
+
+	Configuration:
+
+		The attacker converts the target into a system more suitable for his/her own use. 
+
+		This may involve diabling antivirus packages, installing additional malware, taking inventory of the system and its capabilities, and/or installing additional defenses to prevent other attackers from taking over the target. 
+
+	Exploitation:
+
+		The attacker now uses the host for his own purposes. The nature of exploitation vaaries based on the attacker's original reason for being interested in the target (discussed shortly)
+
+	Propagation:
+
+		The attacker will, if possible, use the host to attack other hosts. The host may serve as an expendable proxy, attacking neighnors (for example, other hosts behind a firewall on a 192.168.0.0/16 network).
+
+	This model isn't perfect, but it's a good general description of how attackers behave. 
+
+	Common tweaks:
+
+		Peer-to-peer worm propagation and phishing attacks rely on passive exploitations and a bit of social engineering. These attacks rely on a target clicking a link or accessing a file, which requires that the bait (filename or story surrounding it) be attractive enough to merit a click. 
+
+		Phishing attacks ex: emails telling you your creedit score has risen, so click a link. 
+
+		On peer-to-peer networks, attackers will drop Trojans with the names of current games or albums in order to attract victims. Even in this case, "surveillance" is still possible. The phishing attacks done in many APT attacks often depend on scouting out the population and posting habits of a site before identifying victims likely to respond to a crafted mail. 
+
+		Worms often merge the reconnaissance and subversion stages into one step. Some examples of this are shown later in the book (notably, in Example 13-2, where an attacker just launches exploits against well-known PHP ur's without checking to see if they actually exist)
+
+		Insider threat attack will often conduct reconnaissance and subversion out of band, such as by stealing another employee's password or talking with a sysadmin to find out where assets are. Don't be surprised if an insider already has all the resources they need to jump straight into exploitation, and completely ignores propagation.
+
+		An automated worm may simply launch its attack against every host it encounters, regardless of whether the host is vulnerable. 
+
+		
+		
+		Worms often merge the reconnaissance and subversion stages into one step. 
+
