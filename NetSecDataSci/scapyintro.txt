@@ -1,0 +1,50 @@
+
+ttl = Time to Live. Duration of packet life.
+
+Scapy Scripting:
+	
+	Note: must run with sudo
+
+	Ex: check if a TCP port is opened (scapy_scripting.py). 
+
+	from scapy.all import *
+	conf.verb = 0
+
+	p = IP(dst="github.com")/TCP()
+	r = sr1(p)
+	print(r.summary())
+
+	out: IP / TCP 192.30.255.113:www_http > 192.168.1.7:ftp_data SA
+
+
+Scapy shell:
+
+	sudo scapy
+
+	Build a packet and play with it:
+
+		>>> a = IP(ttl=10)
+		>>> a
+
+		IP ttl=10
+
+		>>>a.src
+
+		'127.0.0.1'
+
+		>>>a.dst='192.168.1.1'
+		>>>a
+
+		IP ttl=10 dst=192.168.1.1
+
+		>>a.src
+		'192.168.1.7'
+
+		>>>del(a.ttl)
+		>>>a
+
+		IP dst=192.168.1.1
+
+		>>>a.ttl
+		64
+
