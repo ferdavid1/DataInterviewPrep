@@ -1,0 +1,19 @@
+IT forensic analysis deals with the attack after it has happened. 
+
+Methods of Visualization
+
+Univariate Visualization
+
+Univariate data consist of one observed variable per unit measured. Ex: number of bytes per packet or number of IP addresses observed over a period
+
+we use histograms a shit ton. 
+
+Histograms for informational analysis
+		
+	If you can receive packets at any rate from 0-10,00 a second, you can create 10 bins for the ranges 0 to 999, 1000 to 1999, and so on. frequency would be number of times that the observed value occured within the range of the bin. 
+
+	plt.hist(data, normed=False, bins=420)
+
+
+
+

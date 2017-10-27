@@ -1,5 +1,4 @@
 
-
 class BinaryTree(object):
 
 	def __init__(self, root):

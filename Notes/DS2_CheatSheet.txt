@@ -68,7 +68,53 @@
 	
 	Generalized linear models unify various statistical models, such as linear and logistic regression, through the specification of a model family and link function. For instance, one formula could be y~f0+f1 meaning the prediction for y is linearly modelled as a function of the features f0 and f1.
 
-	More complex exapmles can be built using R operators like inclusion (+), exclusion (-), inclusion all (.), and others.
+	More complex examples can be built using R operators like inclusion (+), exclusion (-), inclusion all (.), and others.
+
+6. What are Decision Trees?
+
+	A class of machine learning algorithms where the learned model is represented by a tree. Each node represents a choice associated to one input feature and the edge departing from that node represents the potentional outcomes for the choice. 
+
+	Tree models where the target variable can take a finite set of values are called classification trees, while tree models where the target variable can take continuous variabes are called regression trees. 
+
+	How does one define the 'best' choice?
+
+	Gini Impurity: The sum of the probabilities of each item being chosen, multiplied by the probability of mistaken categorization. 
+
+	Information gain: The difference between the entropy computed before and after performing a split on a particular feature, where the entropy of a random variable X is H(X) =- sum(prob(Xi)* logProb(Xi))
+
+	Variance reduction: the difference between the variance computed before and after performing a split on a particular feature
+
+	The process finds the best decision for each node, and recursively does so for the span of the tree children. 
+
+	Pros:
+
+		Easy to understand
+
+		categorical and continuous data input
+
+		applicable to large datasets with reasonable robustness for outliers
+
+	Cons:
+
+		Learning an optimal decision tree is an NP-complete problem, so the construction is based on heuristics which are frequently making locally-optimal decisions at each node. This decision cannot be reverted (except with random forest, gradient boosting)
+
+		Can overfit training data and frequently do not generalize well on new unseen data. Pruning and randomization techiques minimize the impact of this problem. 
+
+7. What are Ensembles? 
+
+	A class of methods that generate multiple hypotheses using the same base learner. The key intuition is that the combination of multiple hypotheses learned from the data can indeed generate a better prediction than the one generated with a single hypothesis. There are multiple ways to combine base models...
+
+		Bagging: trains each model in the ensemble using a randomly drawn subset of the training set. Then each model in the ensemble votes with equal weight
+
+		Boosting: incrementally builds an ensemble by training each new model instance in such a way that the training instances of that previously misclassified models are thus emphasized. 
+
+		Stacking/Blending: combines predictions built with multiple different learning techniques. The combination is also learned with a special ad-hoc learned model. 
+
+8. What is a gradient boosted tree?
+
+	
+
+
 
 	
 
