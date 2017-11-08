@@ -1,0 +1,5 @@
+
+python's search works like "print(3 in [5,4,6])" -> printing False
+
+Algorithmically? How to build this from scratch
+
