@@ -1,0 +1,24 @@
+
+Thompson sampling
+
+Let's think about confidence intervals again
+
+We know intutitively that sample mean from 10 samples is less accurate 
+
+Central Limit Theorem says that sample mean is approximately Gaussian
+
+Xbar ~ Normal(Mu, sigma^2 / N)
+Xbar ~ Normal(Mu, sigma^2)
+
+Bayesian paradigm takes this a step further
+
+Data is fixed; parameters are random
+
+You want to find the distribution of the parameter given the data
+
+SHould be more accurate than if you did not have the data
+
+We call this the posterior:
+
+	P{theta|X}
+

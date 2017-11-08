@@ -68,7 +68,81 @@
 	
 	Generalized linear models unify various statistical models, such as linear and logistic regression, through the specification of a model family and link function. For instance, one formula could be y~f0+f1 meaning the prediction for y is linearly modelled as a function of the features f0 and f1.
 
-	More complex exapmles can be built using R operators like inclusion (+), exclusion (-), inclusion all (.), and others.
+	More complex examples can be built using R operators like inclusion (+), exclusion (-), inclusion all (.), and others.
 
+6. What are Decision Trees?
+
+	A class of machine learning algorithms where the learned model is represented by a tree. Each node represents a choice associated to one input feature and the edge departing from that node represents the potentional outcomes for the choice. 
+
+	Tree models where the target variable can take a finite set of values are called classification trees, while tree models where the target variable can take continuous variabes are called regression trees. 
+
+	How does one define the 'best' choice?
+
+	Gini Impurity: The sum of the probabilities of each item being chosen, multiplied by the probability of mistaken categorization. 
+
+	Information gain: The difference between the entropy computed before and after performing a split on a particular feature, where the entropy of a random variable X is H(X) =- sum(prob(Xi)* logProb(Xi))
+
+	Variance reduction: the difference between the variance computed before and after performing a split on a particular feature
+
+	The process finds the best decision for each node, and recursively does so for the span of the tree children. 
+
+	Pros:
+
+		Easy to understand
+
+		categorical and continuous data input
+
+		applicable to large datasets with reasonable robustness for outliers
+
+	Cons:
+
+		Learning an optimal decision tree is an NP-complete problem, so the construction is based on heuristics which are frequently making locally-optimal decisions at each node. This decision cannot be reverted (except with random forest, gradient boosting)
+
+		Can overfit training data and frequently do not generalize well on new unseen data. Pruning and randomization techiques minimize the impact of this problem. 
+
+7. What are Ensembles? 
+
+	A class of methods that generate multiple hypotheses using the same base learner. The key intuition is that the combination of multiple hypotheses learned from the data can indeed generate a better prediction than the one generated with a single hypothesis. There are multiple ways to combine base models...
+
+		Bagging: trains each model in the ensemble using a randomly drawn subset of the training set. Then each model in the ensemble votes with equal weight
+
+		Boosting: incrementally builds an ensemble by training each new model instance in such a way that the training instances of that previously misclassified models are thus emphasized. 
+
+		Stacking/Blending: combines predictions built with multiple different learning techniques. The combination is also learned with a special ad-hoc learned model. 
+
+8. What is a gradient boosted tree?
+
+	It builds in sequence a series of decision boosted trees by fitting the models to the data. Each tree is required to predict the error made by previous trees and then compares the prediction to the true label. The dataset is re-labeled to put more emphasis on training instances with poor predictions. 
+
+	The key intuition is that each tree is specifically built for minimizing a loss function representing the errors made in previous iterations. 
+
+	Typically the loss function is either a log loss, a squared error, or an absolute error. Log losses can be used for classification, while squared errors and absolute errors can be used for regression. In certain situations it has been observed that training Gradient Boosting Trees on a slight perturbated sample of the available data can improve the performances achieved by the learner. 
+
+	As a final note, GBTs can handle categorical features and are able to capture non-linearities and interactions in feature space. 
+
+11. What is a Random Forest?
+
+	Trains multiple decision trees in parallel by injecting some randomness into the data, so each decision tree is slightly different from the others. The randomness consists in subsampling the original data to get a different training set (bootstrapping) and in subsampling different subsets of the considered feature sapce in order to split at each tree node. 
+
+	Once the forest is built, it can be used for classification or regression. In classification each tree predicts a label and then the forest predicts the label predicted by the majority of trees. In regression, each tree predicts a continuous value and the forest then predicts the average among those values. 
+
+12. What is AdaBoost?
+
+	One of the simplest and yet most effective classification algorithms. Its name stands for Adaptive Boosting, where a set t = {1,..,T} of simple and weak classifiers Ht(Xn) and the classifiers are also used in turn to boost the mistake made by the previous classifier. Mathematicall at the very beginning all the weights are set to 1/N, where N are the datapoints. 
+
+	Then at each iteration a new classifier is trained on the training set, with the weights that are modified according to how successful each datapoint has been classified in the past epochs. In particular lets define At = log((1-Sigma_t)/Sigma_t) where Sigma_t is the training error at iteration t, the weights at iteration t + 1 are boosted as:  W t+1 = Wt *e^At * I(yn != Ht(Xn)), the latter portion involving the I being the indicator function which returns 1 if the ouput of the base classifier Ht(Xn) at epoch t and for the data point Xn is different from the true label Yn, and it returns 0 otherwise. 
+
+	Therefore the key intuition is that it is possible to decrease the weight of a correct classifier - because it has already solved its task - and increase (boost) the weight of an incorrect classifier because it still needs to solve the problem for that instance. This is boosting is repeated until 0 < Sigma_t < 1/2
+
+	At the end, the classifier returns the sign of the weighted combination of basic classifiers. It should be noticed that the base classifiers are of any type, including but not limited to Bayesian, Linear, Decision Trees, Neural Networks, and so on and so forth. 
+
+13. What is a reccommender system?
+
+	Reccomender systems produce a list of recommendations such as news to read, movies to see, music to listen to, research articles to read, books to buy, and so on and so forth. The reccomendations are generaed through two main approaches which are often combined:
+
+		Collaborative filtering:
+
+			Aims to learn a model from a user's past behavior (items recently purchased, etc) as well as similar choices made by others. The learned model is then used to predict items (or ratings for items) that the user may have interest in. Note that in some situations rating and choices can be explicitly made, while in other situations those are implicitly inferred by user's actions. Collaborative filtering has two variants: 
+
+				
 	
-

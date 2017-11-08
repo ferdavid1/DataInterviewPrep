@@ -1,0 +1,352 @@
+
+ttl = Time to Live. Duration of packet life.
+
+Scapy Scripting:
+	
+	Note: must run scripts with sudo
+
+	Ex: check if a TCP port is opened (scapy_scripting.py). 
+
+	from scapy.all import *
+	conf.verb = 0
+
+	p = IP(dst="github.com")/TCP()
+	r = sr1(p)
+	print(r.summary())
+
+	out: IP / TCP 192.30.255.113:www_http > 192.168.1.7:ftp_data SA
+
+
+Scapy shell:
+
+	sudo scapy
+
+	Build a packet and play with it:
+
+		>>> a = IP(ttl=10)
+		>>> a
+
+		IP ttl=10
+
+		>>>a.src
+
+		'127.0.0.1'
+
+		>>>a.dst='192.168.1.1'
+		>>>a
+
+		IP ttl=10 dst=192.168.1.1
+
+		>>a.src
+		'192.168.1.7'
+
+		>>>del(a.ttl)
+		>>>a
+
+		IP dst=192.168.1.1
+
+		>>>a.ttl
+		64
+
+Stacking layers:
+
+	The / operator is used as a composition operator between two layers. When doing so, the lower layer can have one or more of its default fields overloaded according to the upper layer. A string can be used as a raw layer. 
+
+	>>> IP()
+	returns packet object
+	
+	>>>IP()/TCP()
+	<IP frag=0 proto=TCP |<TCP |>>
+	
+	>>>Ether()/IP()/TCP()
+	<Ether type=0x800 |<IP frag=0 proto=TCP |<TCP |>>>
+
+	>>>Ether()/IP()/IP()/UDP()
+	<Ether type=0x800 |<IP frag=0 proto=IP |<IP frag=0 proto=UDP |<UDP |>>>>
+
+	>>>IP(proto=55)/TCP()
+	<IP frag=0 proto=55 |<TCP |>>
+
+Each packet can be built or dissected
+
+	>>> str(IP())
+	'E\x00\x00\x14\x00\x01\x00\x00@\x00|\xe7\x7f\x00\x00\x01\x7f\x00\x00\x01'
+
+	Note: in python, _ is the latest result
+	>>>IP(_) 
+	<IP version=4L ihl=5L tos=0x0 len=20 id=1 flags= frag=0L ttl=64 proto=IP chksum=0x7ce7 src=127.0.0.1 dst=127.0.0.1 |>
+
+	>>>a = Ether()/IP(dst="www.slashdot.org")/TCP()/"GET /index.html HTTP/1.0 \n\n"
+
+	>>>hexdump(a)
+	00 02 15 37 A2 44 00 AE F3 52 AA D1 08 00 45 00  ...7.D...R....E.
+	00 43 00 01 00 00 40 06 78 3C C0 A8 05 15 42 23  .C....@.x<....B#
+	FA 97 00 14 00 50 00 00 00 00 00 00 00 00 50 02  .....P........P.
+	20 00 BB 39 00 00 47 45 54 20 2F 69 6E 64 65 78   ..9..GET /index
+	2E 68 74 6D 6C 20 48 54 54 50 2F 31 2E 30 20 0A  .html HTTP/1.0 .
+	0A     
+
+	>>>b = str(a)
+	>>>b
+	'\x00\x02\x157\xa2D\x00\xae\xf3R\xaa\xd1\x08\x00E\x00\x00C\x00\x01\x00\x00@\x06x<\xc0
+	 \xa8\x05\x15B#\xfa\x97\x00\x14\x00P\x00\x00\x00\x00\x00\x00\x00\x00P\x02 \x00
+	 \xbb9\x00\x00GET /index.html HTTP/1.0 \n\n'
+
+ 	>>>c = Ether(b)
+ 	>>>c
+ 	<Ether dst=00:02:15:37:a2:44 src=00:ae:f3:52:aa:d1 type=0x800 |<IP version=4L
+	 ihl=5L tos=0x0 len=67 id=1 flags= frag=0L ttl=64 proto=TCP chksum=0x783c
+	 src=192.168.5.21 dst=66.35.250.151 options='' |<TCP sport=20 dport=80 seq=0L
+	 ack=0L dataofs=5L reserved=0L flags=S window=8192 chksum=0xbb39 urgptr=0
+	 options=[] |<Raw load='GET /index.html HTTP/1.0 \n\n' |>>>>
+
+ Reading PCAP files
+
+ 	>>> a = rdpcap("/spare/captures/isakmp.cap")
+ 	>>> a
+ 	<isakmp.cap: UDP:721 TCP:0 ICMP:0 Other:0>
+
+General commands:
+	
+	str(pkt): assemble the packet
+	hexdump(pkt): hexadecimal dump
+	ls(pkt): have the list of fields values
+	pkt.summary(): one line summary
+	pkt.show(): developed view of the packet
+	pkt.show2(): same as how but on the assembled packet
+	pkt.sprintf(): fills a format string with fields values of the packet
+	pkt.decode_payload_as(): changes the way the packet is decoded
+	pkt.command(): generate a Scapy command that can generate the packet
+
+Generating sets of packets
+
+	>>>a = IP(dst="www.slashdot.org/30")
+	>>>a
+	<IP  dst=Net('www.slashdot.org/30') |>
+
+	>>> [p for p in a]
+	[<IP dst=66.35.250.148 |>, <IP dst=66.35.250.149 |>, <IP dst=66.35.250.150 |>, <IP dst=66.35.250.151 |>]
+
+	>>>b = IP(ttl=[1,2,(5,9)])
+	>>>b
+	<IP ttl=[1, 2, (5, 9)] |>
+
+	>>>[p for p in b]
+	[<IP ttl=1 |>, <IP ttl=2 |>, <IP ttl=5 |>, <IP ttl=6 |>, <IP ttl=7 |>, <IP ttl=8 |>, <IP ttl=9 |>]
+
+	>>>c = TCP(dport=[80, 443])
+	>>> [p for p in a/c]
+	[<IP frag=0 proto=TCP dst=66.35.250.148 |<TCP dport=80 |>>,
+	 <IP frag=0 proto=TCP dst=66.35.250.148 |<TCP dport=443 |>>,
+	 <IP frag=0 proto=TCP dst=66.35.250.149 |<TCP dport=80 |>>,
+	 <IP frag=0 proto=TCP dst=66.35.250.149 |<TCP dport=443 |>>,
+	 <IP frag=0 proto=TCP dst=66.35.250.150 |<TCP dport=80 |>>,
+	 <IP frag=0 proto=TCP dst=66.35.250.150 |<TCP dport=443 |>>,
+	 <IP frag=0 proto=TCP dst=66.35.250.151 |<TCP dport=80 |>>,
+	 <IP frag=0 proto=TCP dst=66.35.250.151 |<TCP dport=443 |>>]
+
+More commands
+
+	summary(): displays a list of summaries of each packet
+	nsummary(): same as previous, with the packet number
+	conversations(): displays a graph of conversations
+	show(): displays a packet list filtered with a lambda function
+	filter(): returns a packet list filtered with a lambda function
+	hexdump(): returns a hexdump of all packets
+	hexraw(): returns a hexdump of the Raw layer of all packets
+	padding(): returns a hexdump of packets with padding
+	nzpadding(): returns a hexdump of packets with non-zero padding
+	plot(): plots a lambda function applied to a packet list
+	make table(): displays a table according to a lambda function
+
+Sending packets
+
+	>>>send(IP(dst="1.2.3.4")/ICMP())
+	Sent 1 packet
+
+	>>>sendp(Ether()/IP(dst="1.2.3.4", ttl=(1,4)), iface="eth1")
+	Sent 4 packets
+
+	>>>sendp("I'm travelling on Ethernet", iface="eth1", loop=1, inter=0.2)
+	Sent 16 packets
+
+	>>>sendp(rdpcap("/tmp/pcapfile")) # tcpreplay
+	Sent 11 packets
+
+	Returns packets sent by send()
+	>>>send(IP(dst="127.0.0.1"), return_packets=True)
+	Sent 1 packet
+	<PacketList: TCP:0 UDP:0 ICMP:0 Other:1>
+
+Fuzzing
+
+	function fuzz() is able to change any default value that is not to be calculated (like checksums) by an object whose value is random and whose type is adapted to the field. This enable to quickly build fuzzing templates and send them in loop. In the following example, the IP layer is normal, and the UDP and NTP layers are fuzzed. The UDP checksum will be correct, the UDP destination port will be overloaded by NTP to be 123 and the NTP version will be forced to be 4 All the other ports will be randomized. Note: if you use fuzz() in the IP layer, src and dst parameter won't be random, so in order to do that use RandIP()
+
+	>>>send(IP(dst="target")/fuzz(UDP)/NTP(version=4), loop=1)
+	Sent 16 packets
+
+Send and receive packets (sr)
+
+	>>>p = sr1(IP(dst="www.slashdot.org")/ICMP()/"XXXXXXXXXX")
+	Begin emission:
+	...Finished to send 1 packets.
+	.*
+	Received 5 packets, got 1 answers, remaining 0 packets
+
+	>>>p
+	<IP version=4L ihl=5L tos=0x0 len=39 id=15489 flags= frag=0L ttl=42 proto=ICMP
+	 chksum=0x51dd src=66.35.250.151 dst=192.168.5.21 options='' |<ICMP type=echo-reply
+	 code=0 chksum=0xee45 id=0x0 seq=0x0 |<Raw load='XXXXXXXXXXX'
+	 |<Padding load='\x00\x00\x00\x00' |>>>>
+
+	>>>p.show()
+	---[ IP ]---
+	version   = 4L
+	ihl       = 5L
+	tos       = 0x0
+	len       = 39
+	id        = 15489
+	flags     =
+	frag      = 0L
+	ttl       = 42
+	proto     = ICMP
+	chksum    = 0x51dd
+	src       = 66.35.250.151
+	dst       = 192.168.5.21
+	options   = ''
+	---[ ICMP ]---
+	   type      = echo-reply
+	   code      = 0
+	   chksum    = 0xee45
+	   id        = 0x0
+	   seq       = 0x0
+	---[ Raw ]---
+	      load      = 'XXXXXXXXXXX'
+	---[ Padding ]---
+	         load      = '\x00\x00\x00\x00'
+
+Sniffing
+
+	>>>sniff(filter="icmp and host 66.35.250.151", count=2)
+	<Sniffed: UDP:0 TCP:0 ICMP:2 Other:0>
+	
+	>>>a=_
+
+	>>>a.nsummary()
+	0000 Ether / IP / ICMP 192.168.5.21 echo-request 0 / Raw
+	0001 Ether / IP / ICMP 192.168.5.21 echo-request 0 / Raw
+
+	>>>a[1]
+	<Ether dst=00:ae:f3:52:aa:d1 src=00:02:15:37:a2:44 type=0x800 |<IP version=4L
+	 ihl=5L tos=0x0 len=84 id=0 flags=DF frag=0L ttl=64 proto=ICMP chksum=0x3831
+	 src=192.168.5.21 dst=66.35.250.151 options='' |<ICMP type=echo-request code=0
+	 chksum=0x6571 id=0x8745 seq=0x0 |<Raw load='B\xf7g\xda\x00\x07um\x08\t\n\x0b
+	 \x0c\r\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d
+	 \x1e\x1f !\x22#$%&\'()*+,-./01234567' |>>>>
+
+	>>>sniff(iface="wifi0", prn=lamda x: x.summary())
+	802.11 Management 8 ff:ff:ff:ff:ff:ff / 802.11 Beacon / Info SSID / Info Rates / Info DSset / Info TIM / Info 133
+	802.11 Management 4 ff:ff:ff:ff:ff:ff / 802.11 Probe Request / Info SSID / Info Rates
+	802.11 Management 5 00:0a:41:ee:a5:50 / 802.11 Probe Response / Info SSID / Info Rates / Info DSset / Info 133
+	802.11 Management 4 ff:ff:ff:ff:ff:ff / 802.11 Probe Request / Info SSID / Info Rates
+	802.11 Management 4 ff:ff:ff:ff:ff:ff / 802.11 Probe Request / Info SSID / Info Rates
+	802.11 Management 8 ff:ff:ff:ff:ff:ff / 802.11 Beacon / Info SSID / Info Rates / Info DSset / Info TIM / Info 133
+	802.11 Management 11 00:07:50:d6:44:3f / 802.11 Authentication
+	802.11 Management 11 00:0a:41:ee:a5:50 / 802.11 Authentication
+	802.11 Management 0 00:07:50:d6:44:3f / 802.11 Association Request / Info SSID / Info Rates / Info 133 / Info 149
+	802.11 Management 1 00:0a:41:ee:a5:50 / 802.11 Association Response / Info Rates / Info 133 / Info 149
+	802.11 Management 8 ff:ff:ff:ff:ff:ff / 802.11 Beacon / Info SSID / Info Rates / Info DSset / Info TIM / Info 133
+	802.11 Management 8 ff:ff:ff:ff:ff:ff / 802.11 Beacon / Info SSID / Info Rates / Info DSset / Info TIM / Info 133
+	802.11 / LLC / SNAP / ARP who has 172.20.70.172 says 172.20.70.171 / Padding
+	802.11 / LLC / SNAP / ARP is at 00:0a:b7:4b:9c:dd says 172.20.70.172 / Padding
+	802.11 / LLC / SNAP / IP / ICMP echo-request 0 / Raw
+	802.11 / LLC / SNAP / IP / ICMP echo-reply 0 / Raw
+
+	>>>sniff(iface="eth1", prn=lamda x: x.show())
+		---[ Ethernet ]---
+	dst       = 00:ae:f3:52:aa:d1
+	src       = 00:02:15:37:a2:44
+	type      = 0x800
+	---[ IP ]---
+	   version   = 4L
+	   ihl       = 5L
+	   tos       = 0x0
+	   len       = 84
+	   id        = 0
+	   flags     = DF
+	   frag      = 0L
+	   ttl       = 64
+	   proto     = ICMP
+	   chksum    = 0x3831
+	   src       = 192.168.5.21
+	   dst       = 66.35.250.151
+	   options   = ''
+	---[ ICMP ]---
+	      type      = echo-request
+	      code      = 0
+	      chksum    = 0x89d9
+	      id        = 0xc245
+	      seq       = 0x0
+	---[ Raw ]---
+	         load      = 'B\xf7i\xa9\x00\x04\x149\x08\t\n\x0b\x0c\r\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f !\x22#$%&\'()*+,-./01234567'
+	---[ Ethernet ]---
+	dst       = 00:02:15:37:a2:44
+	src       = 00:ae:f3:52:aa:d1
+	type      = 0x800
+	---[ IP ]---
+	   version   = 4L
+	   ihl       = 5L
+	   tos       = 0x0
+	   len       = 84
+	   id        = 2070
+	   flags     =
+	   frag      = 0L
+	   ttl       = 42
+	   proto     = ICMP
+	   chksum    = 0x861b
+	   src       = 66.35.250.151
+	   dst       = 192.168.5.21
+	   options   = ''
+	---[ ICMP ]---
+	      type      = echo-reply
+	      code      = 0
+	      chksum    = 0x91d9
+	      id        = 0xc245
+	      seq       = 0x0
+	---[ Raw ]---
+	         load      = 'B\xf7i\xa9\x00\x04\x149\x08\t\n\x0b\x0c\r\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f !\x22#$%&\'()*+,-./01234567'
+	---[ Padding ]---
+	            load      = '\n_\x00\x0b'
+
+	>>>sniff(iface=["eth1", "eth2"], prn=lamda xL x.sniffed_on + ": " + x.summary())
+	eth3: Ether / IP / ICMP 192.168.5.21 > 66.35.250.151 echo-request 0 / Raw
+	eth3: Ether / IP / ICMP 66.35.250.151 > 192.168.5.21 echo-reply 0 / Raw
+	eth2: Ether / IP / ICMP 192.168.5.22 > 66.35.250.152 echo-request 0 / Raw
+	eth2: Ether / IP / ICMP 66.35.250.152 > 192.168.5.22 echo-reply 0 / Raw
+
+	We can sniff and do passive OS fingerprinting!!!!
+
+	>>>p 
+		<Ether dst=00:10:4b:b3:7d:4e src=00:40:33:96:7b:60 type=0x800 |<IP version=4L
+	 ihl=5L tos=0x0 len=60 id=61681 flags=DF frag=0L ttl=64 proto=TCP chksum=0xb85e
+	 src=192.168.8.10 dst=192.168.8.1 options='' |<TCP sport=46511 dport=80
+	 seq=2023566040L ack=0L dataofs=10L reserved=0L flags=SEC window=5840
+	 chksum=0x570c urgptr=0 options=[('Timestamp', (342940201L, 0L)), ('MSS', 1460),
+	 ('NOP', ()), ('SAckOK', ''), ('WScale', 0)] |>>>
+
+	 >>>load_module("p0f")
+	
+	 >>>p0f(p)
+	(1.0, ['Linux 2.4.2 - 2.4.14 (1)'])
+
+	>>> a=sniff(prn=prnp0f)
+	(1.0, ['Linux 2.4.2 - 2.4.14 (1)'])
+	(1.0, ['Linux 2.4.2 - 2.4.14 (1)'])
+	(0.875, ['Linux 2.4.2 - 2.4.14 (1)', 'Linux 2.4.10 (1)', 'Windows 98 (?)'])
+	(1.0, ['Windows 2000 (9)']) 
+
+	The scalar part of the tuple is the accuracy of the guess. 
+
+Filters
+
+	

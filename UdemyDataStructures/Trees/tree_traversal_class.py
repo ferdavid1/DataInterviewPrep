@@ -1,5 +1,4 @@
 
-
 class BinaryTree(object):
 
 	def __init__(self, root):
@@ -57,8 +56,6 @@ if __name__ == '__main__':
 	r = BinaryTree(1)
 	r.insertLeft(2)
 	r.insertRight(3)
-	r.getRightChild()
-	r.getLeftChild()
 
 	preorder(r)
 	print('-----')

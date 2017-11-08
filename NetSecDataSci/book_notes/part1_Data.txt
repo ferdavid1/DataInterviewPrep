@@ -1,0 +1,10 @@
+
+A single bot may use multiple techniques to infiltrate and attack other hosts on a network. These attacks may include buffer overflows, spreading across network shares, and simple password cracking. 
+
+A bot attacking an SSH server with a password attempt may be logged by that host's SSH logfile, providing concrete evidence of an attack but no information on anything else the bot did. 
+
+Network traffic might not be able to reconstruct sessions, but it can tell you about other actions by the attacker - 
+including, say, a long successful session with a host that never reported such a session taking place. 
+
+We must learn to collect enough data to reconstruct rare event, but not so much that we make queries impractical. 
+
