@@ -1,0 +1,88 @@
+build the whole game
+
+the goal state is three in a row
+
+have the rl system learn all the rules by itself
+
+agent -> action -> environment -> reward, state -> agent
+
+tictactoer -> put a piece down -> how close are you to winning, what is the configuration -> adjust 
+
+reward doesnt tell you if best or worst, just how good 
+
+Notation 
+
+S(t), A(t) -> R(t+1), S(t+1)
+
+	(s, a, r, s')
+
+Episode
+
+	one run of the game
+
+	over when the game is 
+
+	hyperparameter for our model is number of episodes
+
+	the end of an episode happens when the agent reaches a goal, or "terminal" state
+
+	tic tac toe ends when the board is full or one player gets 3 in a row 
+
+How to define reward?
+
+	Maze - reward of 1 for finding exit, else 0
+
+	this is not efficient tho, no granularity
+
+	better:
+
+		every step gets reward of -1, so every step is penalized. number of steps approaches a minimum afrer a while, so the maze solving is optimized 
+
+Planning for the future
+
+	you want to assign some value to current state which reflects the future reward. 
+
+	this is the Value Function 
+
+		takes into account the probability of all future rewards 
+
+		makes it so you dont need to search the game tree
+
+Credit Assignment problem
+
+	what did i do in the past that most led to the reward that im getting rn 
+
+	which action takes credit 
+
+tictactoe has 3^9 possibilities, which is 19683 states
+
+	this is kind of reasonable but infeasible for other games 
+
+Value(state x) = Average(all future rewards | S(t) = s)
+
+V(s) = 1 if winning state, 0 if lose/draw, 0.5 else
+
+after initializing V(S), update it
+
+	V(s) = V(s) + a(V(s') - V(s))
+
+		where a is the learning rate
+
+
+pseudocode
+
+	for t in range(max_iter):
+		state_history = play_game()
+		s = state_history[0]
+		for s' in state_history[1:]:
+			V(s) = V(s) + learningrate*(V(s') - V(s))
+			s = s'
+
+playing the game
+
+	maxV = 0
+	maxA = None
+	for a, s' in possible_next_states:
+		if V(s') > maxV:
+			maxA = a
+	do(maxA)
