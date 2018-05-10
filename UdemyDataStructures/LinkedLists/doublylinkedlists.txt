@@ -1,4 +1,3 @@
-
 In a doubly linked list, we define a linked list in which each node keeps an explicit reference to the node before it and a reference to the node after it!
 
 These lists allow a greater variety of O(1) time update operations, including insertions and deletions

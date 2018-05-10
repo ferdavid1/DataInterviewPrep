@@ -1,4 +1,3 @@
-
 class DoublyLinkedListNode(object):
 
 	def __init__(self, value):
@@ -18,3 +17,4 @@ if __name__ == '__main__':
 	c.nextnode = None
 	c.prevnode = b
 	print(b.nextnode.value, c.prevnode.value)
+

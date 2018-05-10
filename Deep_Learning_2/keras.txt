@@ -1,0 +1,29 @@
+model = Sequential
+model.add(Dense(units=M, input_dims=D)) # Wx + b
+model.add(Activation="relu") # tf.nn.relu
+model.add(Dense(units=K))
+model.add(Activation("softmax"))
+model.compile(loss="categorical_crossentropy")
+
+model.fit(X, Y)
+model.predict(X)
+
+#CNNs
+model = Sequential()
+model.add(Conv2D(32, (3,3), activation="relu", input_shape= input_shape))
+model.add(Conv2D, (3,3), activation="relu")
+model.add(Flatten())
+model.add(Dense(128, activation="relu"))
+model.add(Dense(num_classes, activation="softmax"))
+mode.compile()
+
+Dropout
+	
+	model.add(Dropout(0.2))
+
+Batch Norm
+
+	model.add(Dense(...))
+	model.add(BatchNormalization())
+	model.add(Activation("relu"))
+	

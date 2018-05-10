@@ -1,4 +1,4 @@
-1. What are the most important machine learning techniques?
+	1. What are the most important machine learning techniques?
 	
 	1. Classification (Naive Bayes, SVM, Decision Trees, Random Forest, NNs)
 	2. Regression (Linear, Logistic)

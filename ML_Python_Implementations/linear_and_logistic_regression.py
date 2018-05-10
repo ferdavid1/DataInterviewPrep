@@ -32,7 +32,6 @@ def gradient_descent(x, y, lr, iters):
 
 def log_reg(train_x, train_y, test_x, lr, iters):
 	weights = list(gradient_descent(train_x, train_y, lr, iters))
-	constant = np.random.rand()
 	feat_1 = np.array([i[0] for i in test_x])
 	feat_2 = np.array([i[1] for i in test_x])
 	feat_3 = np.array([i[2] for i in test_x])

@@ -1,0 +1,23 @@
+Each layer of a neural net is like a little logistic regression
+
+	there is a Wx + b at each layer 
+
+wx + b -> batch norm -> activation -> wx + b -> batch norm -> wx + b
+
+If you have too much data to fit into memory, how do you calculate the mean?
+
+	after you read each number, delete it from memory
+
+		keep a running sum and a count += 1
+
+		divide sum / count
+
+Normalization, generally, means subtracting the mean and dividing by the std. dev. 
+
+batch normalization happens before we go throught the activation function 
+
+wx + b is the linear transformation 
+
+when you use batch normalization, you dont need the bias term of the linear transformation (b) 
+
+batch norm is a kind of noise injection 

@@ -1,0 +1,50 @@
+L1
+
+	encourages sparsity (most weights = 0)
+
+L2 
+
+	encourages small weights (approaching 0)
+
+L_regularized = L_likelihood + lambda|theta|p
+
+	adds a penalty term to the cost 
+
+Dropout 
+
+	drops random nodes in the neural network during training 
+
+	emulates ensembles, meaning you get similar results from if you built a couple of neural networks with the same architecture and averaged their predictions. 
+
+		This is "extreme ensembling"
+
+	that is the broader definition of ensemble, no matter what models you mix you average their predictions or take the majority prediction 
+
+	you drop nodes at every layer!
+
+	set p(keep node) or p(drop node) at each layer
+
+	Typical:
+
+		input: p(keep) = 0.8
+
+		hidden: p(keep) = 0.5
+
+	only drop layers during training 
+
+	multiply the output of the layer by its p(keep)
+
+		makes the weights smaller so effectively all the values are smaller (like in every other regularization)
+
+Noise Injection
+
+	Train(X,Y) -> noise = N(0, small noise variance); Train(X + noise, Y)
+
+		0 is the mean 
+
+	gaussian noise
+
+		prevents overfitting 
+
+	can be used to trick CNNs because of imperceptible-to-human differences in pixels 
+

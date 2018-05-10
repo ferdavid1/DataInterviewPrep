@@ -12,7 +12,7 @@ class Node(object):
 def Nth(val, head):
 	node_list = []
 	curr_node = head
-	while curr_node:
+	while curr_node: # traverse the linked list 
 		node_list.append(curr_node)
 		curr_node = curr_node.nextnode
 	return node_list[-val]
