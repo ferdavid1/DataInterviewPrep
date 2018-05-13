@@ -1,0 +1,34 @@
+Markov Decision Processes (MDP)
+
+	Order of the markov property depends on how many previous time steps the current state depends on 
+
+	first oder markov property only depends on the previous time step 
+
+The "current" state doesnt have to be the state that your in right now. It can be a concatenation of various present, past, and future states
+
+Formally, an MDP is a 5-tuple, of:
+
+	({set of states}, {set of actions}, {set of rewards}, state-transition probabilities, reward probabilities, discount factor)
+
+Policy
+
+	the way we make decisions in an MDP
+
+	represented by pi
+
+Idea
+
+	using reinforcement learning to replace backprop
+
+	play a game to figure out the best weights to use in each layer 
+
+total reward
+
+	sim of all future rewards
+
+Discount factor
+
+	gamma
+
+	how much you weight farther rewards in time as opposed to rewards that will happen soon. 
+
